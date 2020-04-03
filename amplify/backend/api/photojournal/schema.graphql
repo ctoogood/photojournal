@@ -1,0 +1,26 @@
+type Collection
+@model
+@auth(rules: [{allow: owner}]) {
+  id:ID!
+  name:String!
+  description:String
+  coverPhoto:S3Object
+  posts: [Post] @connection(keyName: "byCollection", fields: ["id"])
+}
+
+type Post
+@model
+@key(name: "byCollection", fields: ["collectionId"])
+@auth(rules: [{allow: owner}]) {
+  id:ID!
+  collectionId:ID!
+  caption:String!
+  date:String
+  location:String
+}
+
+type S3Object {
+    bucket: String!
+    key: String!
+    region: String!
+}

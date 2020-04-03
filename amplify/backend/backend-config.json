@@ -7,5 +7,21 @@
 			"customAuth": false
 		}
 	},
-	"api": {}
+	"api": {
+		"photojournal": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authphotojournalecea637c"
+						}
+					}
+				}
+			}
+		}
+	}
 }
