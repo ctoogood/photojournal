@@ -1,0 +1,32 @@
+h2 {
+    text-align: center;
+}
+
+.profile__main {
+    background-color: #ffffff;
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+    position: relative;
+}
+
+.profile__collection {
+    justify-self: stretch;
+    align-self: stretch;
+}
+
+.profile__collection__header {
+    text-align: left;
+    color: #426A79;
+    font-weight: normal;
+    padding-left: 1rem;
+}
+
+.profile__grid {
+    @media only screen and (min-width:600px) { 
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap:1rem;
+        padding:1rem;
+    }
+}
