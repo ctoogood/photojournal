@@ -1,0 +1,10 @@
+.collection__card {
+    margin:1rem;
+}
+
+.collectionList__grid {
+    @media only screen and (min-width:600px) {
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
