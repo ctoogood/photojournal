@@ -1,9 +1,13 @@
 .postsList__grid {
-    max-width:1000px;
-    margin:auto;
     margin-top:2rem;
     @media only screen and (min-width:600px) {
         display:grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
+}
+
+.postsList__main {
+    max-width:1000px;
+    margin:auto;
+    margin-top:2rem
 }
