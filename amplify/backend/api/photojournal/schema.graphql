@@ -17,6 +17,7 @@ type Post
   caption:String!
   date:String
   location:String
+  image:S3Object
 }
 
 type S3Object {

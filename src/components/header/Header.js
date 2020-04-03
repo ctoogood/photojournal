@@ -96,7 +96,7 @@ const Header = loggedIn => {
         ) : (
           <>
             <ListItem button>
-              <Link to="/profile">
+              <Link to={`/profile/${user.username}`}>
                 <ListItemText>Profile</ListItemText>
               </Link>
             </ListItem>
@@ -148,7 +148,7 @@ const Header = loggedIn => {
             </Link>
           ) : (
             <div className="header__account">
-              <Link to="/profile">
+              <Link to={`/profile/${user.username}`}>
                 <AccountCircleIcon
                   className={classes.accountButton}
                   color="primary"

@@ -7,6 +7,7 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  CircularProgress,
   Button
 } from "@material-ui/core";
 
@@ -39,6 +40,7 @@ const Login = () => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -46,11 +48,13 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await Auth.signIn(email, password);
       history.push("/");
     } catch (e) {
       console.log(e.message);
+      setIsLoading(false);
     }
   };
 
@@ -96,14 +100,18 @@ const Login = () => {
                 </FormControl>
               </div>
               <div>
-                <Button
-                  className={classes.button}
-                  color="secondary"
-                  disabled={!validateForm()}
-                  type="submit"
-                >
-                  Login
-                </Button>
+                {isLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    className={classes.button}
+                    color="secondary"
+                    disabled={!validateForm()}
+                    type="submit"
+                  >
+                    Login
+                  </Button>
+                )}
                 <p>Forgot Your Password?</p>
               </div>
             </form>

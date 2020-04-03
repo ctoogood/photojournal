@@ -99,6 +99,11 @@ export const createPost = /* GraphQL */ `
       caption
       date
       location
+      image {
+        bucket
+        key
+        region
+      }
       owner
     }
   }
@@ -114,6 +119,11 @@ export const updatePost = /* GraphQL */ `
       caption
       date
       location
+      image {
+        bucket
+        key
+        region
+      }
       owner
     }
   }
@@ -129,6 +139,11 @@ export const deletePost = /* GraphQL */ `
       caption
       date
       location
+      image {
+        bucket
+        key
+        region
+      }
       owner
     }
   }

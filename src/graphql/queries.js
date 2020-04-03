@@ -60,6 +60,11 @@ export const getPost = /* GraphQL */ `
       caption
       date
       location
+      image {
+        bucket
+        key
+        region
+      }
       owner
     }
   }
@@ -77,6 +82,11 @@ export const listPosts = /* GraphQL */ `
         caption
         date
         location
+        image {
+          bucket
+          key
+          region
+        }
         owner
       }
       nextToken
