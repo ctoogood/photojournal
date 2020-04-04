@@ -7,7 +7,7 @@ import { CircularProgress } from "@material-ui/core";
 import { listPosts, getCollection } from "../../graphql/queries";
 import Post from "./Post";
 import "./posts.scss";
-import ImageUpload from "./ImageUpload";
+import AddPost from "./AddPost";
 
 const PostsList = () => {
   const { collectionid } = useParams();
@@ -42,7 +42,7 @@ const PostsList = () => {
 
   return (
     <section className="postsList__main">
-      <ImageUpload props={thisCollection} />
+      <AddPost collection={collectionid} />
       {isLoading ? null : <h1>{thisCollection.name}</h1>}
       <section className="postsList__grid">
         {isLoading ? (

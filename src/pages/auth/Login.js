@@ -8,31 +8,31 @@ import {
   InputLabel,
   OutlinedInput,
   CircularProgress,
-  Button
+  Button,
 } from "@material-ui/core";
 
 import "./auth.scss";
 import camera from "../../images/jakob-owens-FKyHyNowp-4-unsplash.jpg";
 import { useHistory } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "60px"
+    padding: "60px",
   },
   formControl: {
-    marginBottom: "1rem"
+    marginBottom: "1rem",
   },
   input: {
-    fontSize: "1.2rem"
+    fontSize: ".9rem",
   },
   button: {
     backgroundColor: "#4fa1c4",
     color: "white",
     fontWeight: "normal",
     "&:hover": {
-      color: "#4fa1c4"
-    }
-  }
+      color: "#4fa1c4",
+    },
+  },
 }));
 
 const Login = () => {
@@ -46,7 +46,7 @@ const Login = () => {
     return email.length > 0 && password.length > 0;
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
@@ -76,7 +76,7 @@ const Login = () => {
                     id="component-outlined"
                     autoFocus
                     value={email}
-                    onChange={e => {
+                    onChange={(e) => {
                       setEmail(e.target.value);
                     }}
                     label="Email"
@@ -91,7 +91,7 @@ const Login = () => {
                     className={classes.input}
                     id="component-outlined"
                     value={password}
-                    onChange={e => {
+                    onChange={(e) => {
                       setPassword(e.target.value);
                     }}
                     label="Password"

@@ -1,5 +1,6 @@
 .login__background {
     background-color: #1D404F;
+    height:90vh;
 
     img {
         opacity: 0.7;
@@ -12,6 +13,11 @@ main {
     left:50%;
     transform: translate(-50%, -50%);
     z-index:2;
+
+    @media only screen and (max-width:600px) {
+        width:100%;
+        margin-top: 2rem;
+    }
 
     form {
         margin: 0 auto;
