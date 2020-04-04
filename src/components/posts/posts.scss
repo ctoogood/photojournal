@@ -10,7 +10,8 @@
 .postsList__main {
     max-width:1000px;
     margin:auto;
-    margin-top:2rem
+    margin-top:2rem;
+    position: relative;
 }
 
 .post__image {
@@ -35,6 +36,7 @@ img {
 }
 
 .addPost__main {
+
 
     form {
         margin: 0 auto;

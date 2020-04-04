@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 
-import { createPost } from "../../graphql/mutations";
+import { updatePost } from "../../graphql/mutations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,14 +40,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPost = ({ collection }) => {
+const EditPost = ({ post }) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
-  const [caption, setCaption] = useState();
-  const [location, setLocation] = useState();
-  const [date, setDate] = useState();
-  const [img, setImg] = useState();
+  const [caption, setCaption] = useState(post.caption);
+  const [location, setLocation] = useState(post.location);
+  const [date, setDate] = useState(post.date);
+  const [img, setImg] = useState(post.image.key);
   const [uploading, setUploading] = useState(false);
 
   const {
@@ -88,9 +88,10 @@ const AddPost = ({ collection }) => {
     setLoading(true);
     try {
       await API.graphql(
-        graphqlOperation(createPost, {
+        graphqlOperation(updatePost, {
           input: {
-            collectionId: collection,
+            id: post.id,
+            collectionId: post.collectionId,
             caption: caption,
             location: location,
             date: date,
@@ -197,4 +198,4 @@ const AddPost = ({ collection }) => {
   );
 };
 
-export default AddPost;
+export default EditPost;

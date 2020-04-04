@@ -32,7 +32,7 @@ const CollectionList = () => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        collections.map(collection => (
+        collections.map((collection) => (
           <Collection key={collection.id} collection={collection} />
         ))
       )}
