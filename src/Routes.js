@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Profile from "./pages/Profile";
 import PostList from "./components/posts/PostList";
+import PostDetail from "./components/posts/PostDetail";
 
 const Routes = () => {
   return (
@@ -13,7 +14,12 @@ const Routes = () => {
       <Route path="/" exact component={Hero} />
       <Route path="/login" exact component={Login} />
       <Route path="/profile/:userid" exact component={Profile} />
-      <Route path="/profile/:userid/:collectionid" component={PostList} />
+      <Route path="/profile/:userid/:collectionid" exact component={PostList} />
+      <Route
+        path="/profile/:userid/:collectionid/:postid"
+        exact
+        component={PostDetail}
+      />
       <Route component={NotFound} />
     </Switch>
   );

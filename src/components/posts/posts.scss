@@ -3,6 +3,7 @@
     @media only screen and (min-width:600px) {
         display:grid;
         grid-template-columns: 1fr 1fr 1fr;
+        grid-gap:1rem;
     }
 }
 
@@ -10,4 +11,25 @@
     max-width:1000px;
     margin:auto;
     margin-top:2rem
+}
+
+.post__image {
+    object-fit: cover;
+    height:100%;
+    width:100%;
+}
+
+img {
+    opacity:1;
+    object-fit: cover;
+    height:100%;
+    width:100%;
+
+}
+
+.postDetail__card {
+    max-width: 1000px;
+    margin: auto;
+    margin-top:2rem;
+    margin-bottom:2rem;
 }

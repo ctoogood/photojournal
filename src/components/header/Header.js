@@ -19,29 +19,29 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircleOutlined";
 import "./header.scss";
 import { AuthContext } from "../../context/auth";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   toolBar: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   appBar: {
     backgroundColor: "white",
     boxSizing: "border-box",
     width: "100%",
     maxWidth: "1000px",
-    margin: "auto"
+    margin: "auto",
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   title: {
     fontWeight: 400,
     fontSize: "1.4rem",
     color: "#426A79",
     cursor: "pointer",
-    textDecoration: "none"
+    textDecoration: "none",
   },
   button: {
     position: "absolute",
@@ -51,20 +51,20 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "normal",
     marginRight: "1rem",
     "&:hover": {
-      color: "#4fa1c4"
+      color: "#4fa1c4",
     },
     drawer: {
       marginRight: "2rem",
       padding: "2rem",
-      width: "400px"
-    }
+      width: "400px",
+    },
   },
   accountButton: {
-    display: "inline"
-  }
+    display: "inline",
+  },
 }));
 
-const Header = loggedIn => {
+const Header = (loggedIn) => {
   const history = useHistory();
   const appContext = useContext(AuthContext);
   const { user } = appContext;
