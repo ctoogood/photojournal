@@ -14,6 +14,16 @@
     position: relative;
 }
 
+.postsList__add {
+    position: absolute;
+    top:0;
+    right:0;
+
+    p {
+        display: inline;
+    }
+}
+
 .post__image {
     object-fit: cover;
     height:100%;
@@ -37,6 +47,9 @@ img {
 
 .addPost__main {
 
+    input {
+        padding-bottom:2rem;
+    }
 
     form {
         margin: 0 auto;

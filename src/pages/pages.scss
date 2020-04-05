@@ -10,6 +10,17 @@ h2 {
     position: relative;
 }
 
+
+.profile__add {
+    position: absolute;
+    top:0;
+    right: 0;
+
+    p {
+        display: inline;
+    }
+}
+
 .profile__collection {
     justify-self: stretch;
     align-self: stretch;

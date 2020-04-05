@@ -40,15 +40,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPost = ({ collection }) => {
+const AddPost = (props) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
-  const [caption, setCaption] = useState();
-  const [location, setLocation] = useState();
-  const [date, setDate] = useState();
+  const [caption, setCaption] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
   const [img, setImg] = useState();
-  const [uploading, setUploading] = useState(false);
+  const [file, setFile] = useState({});
 
   const {
     aws_user_files_s3_bucket_region: region,
@@ -57,40 +57,40 @@ const AddPost = ({ collection }) => {
 
   const uploadFile = async (file) => {
     try {
-      const fileName = `upload/${uuid()}`;
       const user = await Auth.currentAuthenticatedUser();
-      const result = await Storage.vault.put(fileName, file, {
+      const result = await Storage.vault.put(img, file, {
         contentType: "image/jpg",
         metadata: {
           owner: user.username,
         },
       });
-      setImg(fileName);
       console.log("Uploaded File:", result);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const onChange = async (e) => {
-    setUploading(true);
+  const setKey = async () => {
+    const user = await Auth.currentAuthenticatedUser();
+    const fileName = `upload/${user.username}/${props.collection}/${uuid()}`;
+    setImg(fileName);
+  };
 
-    let files = [];
-    for (var i = 0; i < e.target.files.length; i++) {
-      files.push(e.target.files.item(i));
-    }
-    await Promise.all(files.map((f) => uploadFile(f)));
-    setUploading(false);
+  const onChange = (e) => {
+    console.log(e.target);
+    setFile(e.target.files.item(0));
+    setKey();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      await uploadFile(file);
       await API.graphql(
         graphqlOperation(createPost, {
           input: {
-            collectionId: collection,
+            collectionId: props.collection,
             caption: caption,
             location: location,
             date: date,
@@ -98,6 +98,8 @@ const AddPost = ({ collection }) => {
           },
         })
       );
+      console.log(file, img);
+      await props.onClose();
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -106,39 +108,20 @@ const AddPost = ({ collection }) => {
 
   return (
     <section className="addPost__main">
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Card className={classes.card}>
+      <Card className={classes.card}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
           <form onSubmit={handleSubmit}>
             <h2>Add A Post</h2>
             <div>
-              <Button
-                className={classes.button}
-                onClick={() =>
-                  document.getElementById("add-image-file-input").click()
-                }
-                disabled={uploading}
-                content={uploading ? "Uploading..." : "Add Images"}
-              >
-                Select Image
-              </Button>
-
-              <input
-                id="add-image-file-input"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={onChange}
-                style={{ display: "none" }}
-              />
+              <input type="file" accept="image/*" onChange={onChange} />
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
                 <InputLabel htmlFor="component-outlined">Caption</InputLabel>
                 <OutlinedInput
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   autoFocus
                   value={caption}
@@ -156,7 +139,6 @@ const AddPost = ({ collection }) => {
                 <InputLabel htmlFor="component-outlined">Location</InputLabel>
                 <OutlinedInput
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   value={location}
                   onChange={(e) => {
@@ -171,7 +153,6 @@ const AddPost = ({ collection }) => {
               <FormControl className={classes.formControl} variant="outlined">
                 <OutlinedInput
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   value={date}
                   onChange={(e) => {
@@ -182,17 +163,12 @@ const AddPost = ({ collection }) => {
                 />
               </FormControl>
             </div>
-            <Button
-              className={classes.button}
-              color="secondary"
-              type="submit"
-              disabled={!img}
-            >
+            <Button className={classes.button} color="secondary" type="submit">
               Add Post
             </Button>
           </form>
-        </Card>
-      )}
+        )}
+      </Card>
     </section>
   );
 };

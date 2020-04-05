@@ -33,12 +33,16 @@ const Profile = () => {
   return (
     <section className="profile__main">
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-        <AddCollection />
+        <AddCollection onClose={handleClose} />
       </Dialog>
       <h1 style={{ textAlign: "left" }}>My Collections</h1>
-      <IconButton onClick={openDialog} className={classes.icon}>
-        <Add color="primary" />
-      </IconButton>
+      <div className="profile__add">
+        <IconButton onClick={openDialog}>
+          <Add color="primary" />
+        </IconButton>
+        <p>Add Collection</p>
+      </div>
+
       <CollectionList />
     </section>
   );

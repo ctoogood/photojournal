@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddCollection = () => {
+const AddCollection = (props) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +57,7 @@ const AddCollection = () => {
         })
       );
       setLoading(false);
+      props.onClose();
     } catch (e) {
       console.log(e);
     }
@@ -64,10 +65,10 @@ const AddCollection = () => {
 
   return (
     <section className="addPost__main">
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Card className={classes.card}>
+      <Card className={classes.card}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
           <form onSubmit={handleSubmit}>
             <h2>Add A Collection</h2>
             <div>
@@ -108,8 +109,8 @@ const AddCollection = () => {
               Add Collection
             </Button>
           </form>
-        </Card>
-      )}
+        )}
+      </Card>
     </section>
   );
 };

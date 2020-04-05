@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { API, graphqlOperation } from "aws-amplify";
+import { useHistory } from "react-router-dom";
+import { API, graphqlOperation, Auth } from "aws-amplify";
 import { makeStyles } from "@material-ui/styles";
 
 import {
@@ -37,27 +38,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditCollection = ({ collection }) => {
+const EditCollection = (props) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(collection.name);
-  const [description, setDescription] = useState(collection.description);
+  const [name, setName] = useState(props.collection.name);
+  const [description, setDescription] = useState(props.collection.description);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const user = await Auth.currentAuthenticatedUser();
       await API.graphql(
         graphqlOperation(updateCollection, {
           input: {
-            id: collection.id,
+            id: props.collection.id,
             name: name,
             description: description,
           },
         })
       );
+      props.onClose();
       setLoading(false);
+      history.push(`/profile/${user.username}/${props.collection.id}`);
     } catch (e) {
       console.log(e);
     }

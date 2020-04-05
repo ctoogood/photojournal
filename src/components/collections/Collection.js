@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Auth, API, graphqlOperation } from "aws-amplify";
+import { Auth, API, graphqlOperation, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react";
 import { makeStyles } from "@material-ui/styles";
 
@@ -23,6 +23,7 @@ import EditCollection from "./EditCollection";
 import { deleteCollection } from "../../graphql/mutations";
 
 import "./collections.scss";
+import { listPosts } from "../../graphql/queries";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -54,9 +55,24 @@ const Collection = ({ collection }) => {
 
   const removeCollection = async () => {
     try {
+      const collectionPosts = await API.graphql(
+        graphqlOperation(listPosts, {
+          filter: { collectionId: { eq: collection.id } },
+        })
+      );
+      const results = collectionPosts.data.listPosts.items;
       await API.graphql(
         graphqlOperation(deleteCollection, { input: { id: collection.id } })
       );
+      await results.forEach((post) => {
+        Storage.remove(post.image.key, { level: "private" })
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
       alert("Collection deleted");
     } catch (e) {
       console.log(e);
@@ -66,7 +82,7 @@ const Collection = ({ collection }) => {
   return (
     <section className="collection__card">
       <Dialog open={open} onClose={handleClose}>
-        <EditCollection collection={collection} />
+        <EditCollection onClose={handleClose} collection={collection} />
       </Dialog>
       <Menu
         id="simple-menu"

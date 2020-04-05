@@ -22,6 +22,23 @@ const PostDetail = () => {
   const [image, setImage] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const newDate = new Date(post.date);
+  var month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ][newDate.getMonth()];
+  const date = `${newDate.getDate()} ${month} ${newDate.getFullYear()}`;
+
   const thisPost = useCallback(async () => {
     setLoading(true);
     try {
@@ -53,7 +70,7 @@ const PostDetail = () => {
             </CardMedia>
             <CardContent>
               <Typography variant="subtitle1">{post.caption}</Typography>
-              <Typography variant="subtitle1">{post.date}</Typography>
+              <Typography variant="subtitle1">{date}</Typography>
               <Typography variant="subtitle1">{post.location}</Typography>
             </CardContent>
           </CardActionArea>

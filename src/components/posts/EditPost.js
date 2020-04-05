@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 
 import { updatePost } from "../../graphql/mutations";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditPost = ({ post }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const [caption, setCaption] = useState(post.caption);
@@ -87,6 +89,7 @@ const EditPost = ({ post }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const user = await Auth.currentAuthenticatedUser();
       await API.graphql(
         graphqlOperation(updatePost, {
           input: {
@@ -100,6 +103,9 @@ const EditPost = ({ post }) => {
         })
       );
       setLoading(false);
+      history.push(
+        `/profile/${user.userrname}/${post.collectionId}/${post.id}`
+      );
     } catch (e) {
       console.log(e);
     }

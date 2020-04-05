@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Auth, API, graphqlOperation } from "aws-amplify";
+import { Auth, API, graphqlOperation, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react";
 import { makeStyles } from "@material-ui/styles";
 
@@ -44,6 +44,23 @@ const Post = ({ post }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
 
+  const newDate = new Date(post.date);
+  var month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ][newDate.getMonth()];
+  const date = `${newDate.getDate()} ${month} ${newDate.getFullYear()}`;
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -62,6 +79,10 @@ const Post = ({ post }) => {
       await API.graphql(
         graphqlOperation(deletePost, { input: { id: post.id } })
       );
+      Storage.remove(post.image.key, { level: "private" })
+        .then((result) => console.log(post.image.key, result))
+        .catch((err) => console.log(err));
+
       alert("Post deleted");
     } catch (e) {
       console.log(e);
@@ -142,7 +163,7 @@ const Post = ({ post }) => {
                 {post.caption}
               </Typography>
               <Typography gutterBottom variant="subtitle1">
-                {post.date}
+                {date}
               </Typography>
               <Typography gutterBottom variant="subtitle1">
                 {post.location}

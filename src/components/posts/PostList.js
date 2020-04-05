@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { API, graphqlOperation } from "aws-amplify";
+import { useParams, useLocation } from "react-router-dom";
+import { API, graphqlOperation, Auth, Cache } from "aws-amplify";
 import { makeStyles } from "@material-ui/styles";
 
-import {
-  CircularProgress,
-  IconButton,
-  Menu,
-  MenuItem,
-  Dialog,
-} from "@material-ui/core";
+import { CircularProgress, IconButton, Dialog } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import { listPosts, getCollection } from "../../graphql/queries";
+import * as subscriptions from "../../graphql/subscriptions";
 import Post from "./Post";
 import "./posts.scss";
 import AddPost from "./AddPost";
@@ -32,25 +27,27 @@ const useStyles = makeStyles((theme) => ({
 const PostsList = () => {
   const classes = useStyles();
   const { collectionid } = useParams();
+  const location = useLocation();
 
   const [posts, setPosts] = useState([]);
   const [thisCollection, setThisCollection] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
-    setAnchorEl(null);
     setOpen(false);
   };
 
   const openDialog = () => {
     setOpen(true);
   };
+
+  const setCache = useCallback(
+    (value) => {
+      Cache.setItem(location.pathname, value);
+    },
+    [location]
+  );
 
   const getPosts = useCallback(async () => {
     try {
@@ -66,36 +63,66 @@ const PostsList = () => {
       );
       const collectionData = collection.data.getCollection;
       setThisCollection(collectionData);
+      setCache(collectionData);
       setIsLoading(false);
+      console.log(Cache);
     } catch (e) {
       console.log(e);
     }
-  }, [collectionid]);
+  }, [collectionid, setCache]);
 
   useEffect(() => {
     getPosts();
   }, [getPosts]);
 
+  useEffect(() => {
+    let subscription;
+    async function createSubscription() {
+      const user = await Auth.currentAuthenticatedUser();
+      subscription = API.graphql(
+        graphqlOperation(subscriptions.onCreatePost, { owner: user.username })
+      ).subscribe({
+        next: (data) => {
+          const post = data.value.data.onCreatePost;
+          setPosts((posts) => [...posts, post]);
+        },
+      });
+    }
+    createSubscription();
+    return () => subscription.unsubscribe();
+  }, [posts]);
+
+  useEffect(() => {
+    let deleted;
+    async function deleteSubscription() {
+      const user = await Auth.currentAuthenticatedUser();
+      deleted = API.graphql(
+        graphqlOperation(subscriptions.onDeletePost, { owner: user.username })
+      ).subscribe({
+        next: (deleteData) => {
+          const post = deleteData.value.data.onDeletePost;
+          setPosts(posts.filter((item) => item.id !== post.id));
+        },
+      });
+    }
+    deleteSubscription();
+    return () => deleted.unsubscribe();
+  }, [posts]);
+
   return (
     <section className="postsList__main">
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-        <AddPost collection={collectionid} />
+        <AddPost onClose={handleClose} collection={collectionid} />
       </Dialog>
       {isLoading ? null : (
         <>
           <h1>{thisCollection.name}</h1>
-          <IconButton onClick={handleClick} className={classes.icon}>
-            <AddIcon color="primary" />
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={openDialog}>Add Post</MenuItem>
-          </Menu>
+          <div className="postsList__add">
+            <IconButton onClick={openDialog}>
+              <AddIcon color="primary" />
+            </IconButton>
+            <p>Add Post</p>
+          </div>
         </>
       )}
       <section className="postsList__grid">
