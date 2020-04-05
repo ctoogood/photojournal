@@ -9,9 +9,8 @@ import {
   CardContent,
   Typography,
   CardMedia,
-  CardActionArea,
+  CardActions,
   IconButton,
-  CardHeader,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -30,11 +29,23 @@ import { deletePost, updateCollection } from "../../graphql/mutations";
 import EditPost from "./EditPost";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    position: "relative",
+  },
   media: {
-    maxHeight: "200px",
+    maxHeight: "300px",
     height: "100%",
     overflow: "hidden",
+  },
+  content: {
+    textAlign: "left",
+    fontWeight: "lighter",
+    position: "relative",
+  },
+  settings: {
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
 }));
 
@@ -141,36 +152,37 @@ const Post = ({ post }) => {
         </MenuItem>
       </Menu>
       <Card className={classes.root}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings" onClick={handleClick}>
+        <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
+          <CardMedia className={classes.media}>
+            <S3Image
+              className="post__image"
+              level="private"
+              imgKey={post.image.key}
+            />
+          </CardMedia>
+        </Link>
+        <CardContent className={classes.content}>
+          <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
+            <Typography gutterBottom variant="h6">
+              {post.caption}
+            </Typography>
+            <Typography gutterBottom variant="body1">
+              <em>{date}</em>
+            </Typography>
+            <Typography gutterBottom variant="body1">
+              <em>{post.location}</em>
+            </Typography>
+          </Link>
+          <CardActions>
+            <IconButton
+              className={classes.settings}
+              aria-label="settings"
+              onClick={handleClick}
+            >
               <MoreVertIcon />
             </IconButton>
-          }
-        />
-
-        <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
-          <CardActionArea>
-            <CardMedia className={classes.media}>
-              <S3Image
-                className="post__image"
-                level="private"
-                imgKey={post.image.key}
-              />
-            </CardMedia>
-            <CardContent className={classes.content}>
-              <Typography gutterBottom variant="h5">
-                {post.caption}
-              </Typography>
-              <Typography gutterBottom variant="subtitle1">
-                {date}
-              </Typography>
-              <Typography gutterBottom variant="subtitle1">
-                {post.location}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Link>
+          </CardActions>
+        </CardContent>
       </Card>
     </section>
   );

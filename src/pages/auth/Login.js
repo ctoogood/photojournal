@@ -9,6 +9,7 @@ import {
   OutlinedInput,
   CircularProgress,
   Button,
+  Dialog,
 } from "@material-ui/core";
 
 import "./auth.scss";
@@ -33,11 +34,17 @@ const useStyles = makeStyles((theme) => ({
       color: "#4fa1c4",
     },
   },
+  verify: {
+    zIndex: "10",
+  },
 }));
 
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
+  const [login, setLogin] = useState(true);
+  const [verify, setVerify] = useState(false);
+  const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +53,7 @@ const Login = () => {
     return email.length > 0 && password.length > 0;
   }
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
@@ -55,7 +62,43 @@ const Login = () => {
     } catch (e) {
       console.log(e.message);
       setIsLoading(false);
+      if (e.message === "User is not confirmed.") {
+        setVerify(true);
+      }
     }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await Auth.signUp(email, password);
+      setVerify(true);
+    } catch (e) {
+      console.log(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmSignUp = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await Auth.confirmSignUp(email, code);
+      history.push("/");
+      setVerify(false);
+    } catch (e) {
+      console.log(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleClick = () => {
+    setLogin(!login);
+  };
+
+  const handleClose = () => {
+    setVerify(false);
   };
 
   return (
@@ -64,64 +107,201 @@ const Login = () => {
         <img src={camera} alt="camera" />
       </section>
       <main>
-        <Card className={classes.root}>
-          <CardContent>
-            <h3>Login</h3>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <FormControl className={classes.formControl} variant="outlined">
-                  <InputLabel htmlFor="component-outlined">Email</InputLabel>
-                  <OutlinedInput
-                    className={classes.input}
-                    id="component-outlined"
-                    autoFocus
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                    label="Email"
-                    type="email"
-                  />
-                </FormControl>
-              </div>
-              <div>
-                <FormControl className={classes.formControl} variant="outlined">
-                  <InputLabel htmlFor="component-outlined">Password</InputLabel>
-                  <OutlinedInput
-                    className={classes.input}
-                    id="component-outlined"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                    label="Password"
-                    type="password"
-                  />
-                </FormControl>
-              </div>
-              <div>
-                {isLoading ? (
-                  <CircularProgress />
-                ) : (
-                  <Button
-                    className={classes.button}
-                    color="secondary"
-                    disabled={!validateForm()}
-                    type="submit"
+        <Dialog open={verify} onClose={handleClose}>
+          <Card className={classes.verify}>
+            <CardContent>
+              <h3>Enter Verification Code</h3>
+              <form onSubmit={handleConfirmSignUp}>
+                <div>
+                  <FormControl
+                    className={classes.formControl}
+                    variant="outlined"
                   >
-                    Login
-                  </Button>
-                )}
-                <p>Forgot Your Password?</p>
-              </div>
-            </form>
-            <section className="login__noaccount">
-              <p>No Account?</p>
-              <Button className={classes.button} color="primary" type="button">
-                Sign Up
-              </Button>
-            </section>
-          </CardContent>
+                    <InputLabel htmlFor="component-outlined">Code</InputLabel>
+                    <OutlinedInput
+                      className={classes.input}
+                      id="component-outlined"
+                      autoFocus
+                      value={code}
+                      onChange={(e) => {
+                        setCode(e.target.value);
+                      }}
+                      label="Code"
+                      type="text"
+                    />
+                  </FormControl>
+                </div>
+                <div>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button
+                      className={classes.button}
+                      color="secondary"
+                      disabled={!validateForm()}
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
+              </form>
+              <section className="login__noaccount">
+                <p>Didn't receive a code?</p>
+                <Button
+                  className={classes.button}
+                  color="primary"
+                  type="button"
+                >
+                  Resend Code
+                </Button>
+              </section>
+            </CardContent>
+          </Card>
+        </Dialog>
+        <Card className={classes.root}>
+          {login ? (
+            <CardContent>
+              <h3>Login</h3>
+              <form onSubmit={handleLogin}>
+                <div>
+                  <FormControl
+                    className={classes.formControl}
+                    variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                    <OutlinedInput
+                      className={classes.input}
+                      id="component-outlined"
+                      autoFocus
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                      label="Email"
+                      type="email"
+                    />
+                  </FormControl>
+                </div>
+                <div>
+                  <FormControl
+                    className={classes.formControl}
+                    variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined">
+                      Password
+                    </InputLabel>
+                    <OutlinedInput
+                      className={classes.input}
+                      id="component-outlined"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                      label="Password"
+                      type="password"
+                    />
+                  </FormControl>
+                </div>
+                <div>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button
+                      className={classes.button}
+                      color="secondary"
+                      disabled={!validateForm()}
+                      type="submit"
+                    >
+                      Login
+                    </Button>
+                  )}
+                  <p>Forgot Your Password?</p>
+                </div>
+              </form>
+              <section className="login__noaccount">
+                <p>No Account?</p>
+                <Button
+                  className={classes.button}
+                  color="primary"
+                  type="button"
+                  onClick={handleClick}
+                >
+                  Sign Up
+                </Button>
+              </section>
+            </CardContent>
+          ) : (
+            <CardContent>
+              <h3>Sign Up</h3>
+              <form onSubmit={handleSignUp}>
+                <div>
+                  <FormControl
+                    className={classes.formControl}
+                    variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                    <OutlinedInput
+                      className={classes.input}
+                      id="component-outlined"
+                      autoFocus
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                      label="Email"
+                      type="email"
+                    />
+                  </FormControl>
+                </div>
+                <div>
+                  <FormControl
+                    className={classes.formControl}
+                    variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined">
+                      Password
+                    </InputLabel>
+                    <OutlinedInput
+                      className={classes.input}
+                      id="component-outlined"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                      label="Password"
+                      type="password"
+                    />
+                  </FormControl>
+                </div>
+                <div className="auth__spaceAbove">
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button
+                      className={classes.button}
+                      color="secondary"
+                      disabled={!validateForm()}
+                      type="submit"
+                    >
+                      Sign Up
+                    </Button>
+                  )}
+                </div>
+              </form>
+              <section className="login__noaccount">
+                <p>Already Registered?</p>
+                <Button
+                  className={classes.button}
+                  color="primary"
+                  type="button"
+                  onClick={handleClick}
+                >
+                  Login
+                </Button>
+              </section>
+            </CardContent>
+          )}
         </Card>
       </main>
     </>

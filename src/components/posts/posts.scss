@@ -4,6 +4,7 @@
         display:grid;
         grid-template-columns: 1fr 1fr 1fr;
         grid-gap:1rem;
+        margin:1rem;
     }
 }
 
@@ -12,15 +13,24 @@
     margin:auto;
     margin-top:2rem;
     position: relative;
+
+    h1 {
+        margin-left: 0.5rem;
+    }
+
 }
 
 .postsList__add {
     position: absolute;
     top:0;
     right:0;
+    margin-right: 0.5rem;
 
     p {
+        display: none;
+        @media only screen and (min-width:600px) {
         display: inline;
+        }
     }
 }
 

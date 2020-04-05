@@ -8,6 +8,8 @@ h2 {
     margin: auto;
     text-align: center;
     position: relative;
+
+
 }
 
 
@@ -15,9 +17,13 @@ h2 {
     position: absolute;
     top:0;
     right: 0;
+    margin-right:0.5rem;
 
     p {
+        display: none;
+        @media only screen and (min-width:600px) {
         display: inline;
+        }
     }
 }
 

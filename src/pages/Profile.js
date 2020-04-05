@@ -35,7 +35,9 @@ const Profile = () => {
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
         <AddCollection onClose={handleClose} />
       </Dialog>
-      <h1 style={{ textAlign: "left" }}>My Collections</h1>
+      <h1 style={{ textAlign: "left", marginLeft: "0.5rem" }}>
+        My Collections
+      </h1>
       <div className="profile__add">
         <IconButton onClick={openDialog}>
           <Add color="primary" />
