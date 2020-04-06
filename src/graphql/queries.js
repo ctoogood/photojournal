@@ -17,9 +17,11 @@ export const getCollection = /* GraphQL */ `
         items {
           id
           collectionId
+          title
           caption
           date
           location
+          tags
           owner
         }
         nextToken
@@ -57,9 +59,11 @@ export const getPost = /* GraphQL */ `
     getPost(id: $id) {
       id
       collectionId
+      title
       caption
       date
       location
+      tags
       image {
         bucket
         key
@@ -79,9 +83,11 @@ export const listPosts = /* GraphQL */ `
       items {
         id
         collectionId
+        title
         caption
         date
         location
+        tags
         image {
           bucket
           key
@@ -148,9 +154,11 @@ export const collectionByDate = /* GraphQL */ `
       items {
         id
         collectionId
+        title
         caption
         date
         location
+        tags
         image {
           bucket
           key

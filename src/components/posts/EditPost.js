@@ -46,6 +46,7 @@ const EditPost = ({ post }) => {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
   const [caption, setCaption] = useState(post.caption);
   const [location, setLocation] = useState(post.location);
   const [date, setDate] = useState(post.date);
@@ -139,6 +140,23 @@ const EditPost = ({ post }) => {
                 onChange={onChange}
                 style={{ display: "none" }}
               />
+            </div>
+            <div>
+              <FormControl className={classes.formControl} variant="outlined">
+                <InputLabel htmlFor="component-outlined">Title</InputLabel>
+                <OutlinedInput
+                  className={classes.input}
+                  id="component-outlined"
+                  autoFocus
+                  value={title}
+                  multiline={true}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                  label="Title"
+                  type="text"
+                />
+              </FormControl>
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">

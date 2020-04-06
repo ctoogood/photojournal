@@ -17,6 +17,7 @@ import * as subscriptions from "../../graphql/subscriptions";
 import Post from "./Post";
 import "./posts.scss";
 import AddPost from "./AddPost";
+import SimpleSnackbar from "../snack/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -40,6 +41,8 @@ const PostsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState({});
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -123,6 +126,19 @@ const PostsList = () => {
     return () => deleted.unsubscribe();
   }, [posts]);
 
+  const snack = (msg) => {
+    setSuccess(true);
+    setMessage(msg);
+  };
+
+  const snackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccess(false);
+  };
+
   return (
     <section className="postsList__main">
       {isLoading ? null : (
@@ -134,7 +150,11 @@ const PostsList = () => {
         </Breadcrumbs>
       )}
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-        <AddPost onClose={handleClose} collection={collectionid} />
+        <AddPost
+          onClose={handleClose}
+          onSnack={snack}
+          collection={collectionid}
+        />
       </Dialog>
       {isLoading ? null : (
         <>
@@ -151,9 +171,12 @@ const PostsList = () => {
         {isLoading ? (
           <CircularProgress />
         ) : (
-          posts.map((post) => <Post key={post.id} post={post} />)
+          posts.map((post) => (
+            <Post key={post.id} onSnack={snack} post={post} />
+          ))
         )}
       </section>
+      <SimpleSnackbar open={success} onClose={snackClose} message={message} />
     </section>
   );
 };

@@ -58,9 +58,11 @@ const Login = () => {
     setIsLoading(true);
     try {
       await Auth.signIn(email, password);
-      history.push("/");
+      const user = await Auth.currentAuthenticatedUser();
+      history.push(`/profile/${user.userName}`);
     } catch (e) {
       console.log(e.message);
+      alert(e.message);
       setIsLoading(false);
       if (e.message === "User is not confirmed.") {
         setVerify(true);
@@ -76,6 +78,7 @@ const Login = () => {
       setVerify(true);
     } catch (e) {
       console.log(e.message);
+      alert(e.message);
       setIsLoading(false);
     }
   };
@@ -85,10 +88,12 @@ const Login = () => {
     setIsLoading(true);
     try {
       await Auth.confirmSignUp(email, code);
-      history.push("/");
+      const user = await Auth.currentAuthenticatedUser();
+      history.push(`/profile/${user.userName}`);
       setVerify(false);
     } catch (e) {
       console.log(e.message);
+      alert(e.message);
       setIsLoading(false);
     }
   };

@@ -17,9 +17,11 @@ type Post
 @auth(rules: [{allow: owner}]) {
   id:ID!
   collectionId:ID!
-  caption:String!
+  title:String!
+  caption:String
   date:String
   location:String
+  tags:String
   image:S3Object
 }
 

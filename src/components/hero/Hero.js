@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { Button } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+// import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import camera from "../../images/jakob-owens-FKyHyNowp-4-unsplash.jpg";
 import "./Hero.scss";
 import { AuthContext } from "../../context/auth";
@@ -37,10 +37,10 @@ const Hero = () => {
           </Link>
         ) : null}
       </div>
-      <div className="hero__expand">
+      {/* <div className="hero__expand">
         <h2>Find Out More</h2>
         <ExpandMoreIcon />
-      </div>
+      </div> */}
     </section>
   );
 };

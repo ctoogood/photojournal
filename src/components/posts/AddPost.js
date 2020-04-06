@@ -44,6 +44,7 @@ const AddPost = (props) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
@@ -91,6 +92,7 @@ const AddPost = (props) => {
         graphqlOperation(createPost, {
           input: {
             collectionId: props.collection,
+            title: title,
             caption: caption,
             location: location,
             date: date,
@@ -100,6 +102,7 @@ const AddPost = (props) => {
       );
       console.log(file, img);
       await props.onClose();
+      await props.onSnack("Post Added!");
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -116,6 +119,23 @@ const AddPost = (props) => {
             <h2>Add A Post</h2>
             <div>
               <input type="file" accept="image/*" onChange={onChange} />
+            </div>
+            <div>
+              <FormControl className={classes.formControl} variant="outlined">
+                <InputLabel htmlFor="component-outlined">Title</InputLabel>
+                <OutlinedInput
+                  className={classes.input}
+                  id="component-outlined"
+                  autoFocus
+                  value={title}
+                  multiline={true}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                  label="Title"
+                  type="text"
+                />
+              </FormControl>
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">

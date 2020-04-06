@@ -17,9 +17,11 @@ export const onCreateCollection = /* GraphQL */ `
         items {
           id
           collectionId
+          title
           caption
           date
           location
+          tags
           owner
         }
         nextToken
@@ -43,9 +45,11 @@ export const onUpdateCollection = /* GraphQL */ `
         items {
           id
           collectionId
+          title
           caption
           date
           location
+          tags
           owner
         }
         nextToken
@@ -69,9 +73,11 @@ export const onDeleteCollection = /* GraphQL */ `
         items {
           id
           collectionId
+          title
           caption
           date
           location
+          tags
           owner
         }
         nextToken
@@ -84,9 +90,11 @@ export const onCreatePost = /* GraphQL */ `
     onCreatePost(owner: $owner) {
       id
       collectionId
+      title
       caption
       date
       location
+      tags
       image {
         bucket
         key
@@ -101,9 +109,11 @@ export const onUpdatePost = /* GraphQL */ `
     onUpdatePost(owner: $owner) {
       id
       collectionId
+      title
       caption
       date
       location
+      tags
       image {
         bucket
         key
@@ -118,9 +128,11 @@ export const onDeletePost = /* GraphQL */ `
     onDeletePost(owner: $owner) {
       id
       collectionId
+      title
       caption
       date
       location
+      tags
       image {
         bucket
         key

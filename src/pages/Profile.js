@@ -6,6 +6,7 @@ import { IconButton, Dialog } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 
 import AddCollection from "../components/collections/AddCollection";
+import SimpleSnackbar from "../components/snack/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -22,18 +23,41 @@ const useStyles = makeStyles((theme) => ({
 const Profile = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleClose = () => {
+  const closeHandle = () => {
     setOpen(false);
   };
 
   const openDialog = () => {
     setOpen(true);
   };
+
+  const collectionAdd = () => {
+    setSuccess(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccess(false);
+  };
+
   return (
     <section className="profile__main">
-      <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-        <AddCollection className={classes.add} onClose={handleClose} />
+      <SimpleSnackbar
+        open={success}
+        onClose={handleClose}
+        message="Collection Added!"
+      />
+      <Dialog className={classes.dialog} open={open} onClose={closeHandle}>
+        <AddCollection
+          className={classes.add}
+          onClose={closeHandle}
+          onAdd={collectionAdd}
+        />
       </Dialog>
       <h1 style={{ textAlign: "left", marginLeft: "0.5rem" }}>
         My Collections
@@ -44,7 +68,6 @@ const Profile = () => {
         </IconButton>
         <p>Add Collection</p>
       </div>
-
       <CollectionList />
     </section>
   );

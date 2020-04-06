@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = ({ post }) => {
+const Post = (props) => {
   const classes = useStyles();
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -71,13 +71,13 @@ const Post = ({ post }) => {
   const removePost = async () => {
     try {
       await API.graphql(
-        graphqlOperation(deletePost, { input: { id: post.id } })
+        graphqlOperation(deletePost, { input: { id: props.post.id } })
       );
-      Storage.remove(post.image.key, { level: "private" })
-        .then((result) => console.log(post.image.key, result))
+      Storage.remove(props.post.image.key, { level: "private" })
+        .then((result) => console.log(props.post.image.key, result))
         .catch((err) => console.log(err));
 
-      alert("Post deleted");
+      props.onSnack("Post deleted");
     } catch (e) {
       console.log(e);
     }
@@ -88,16 +88,16 @@ const Post = ({ post }) => {
       await API.graphql(
         graphqlOperation(updateCollection, {
           input: {
-            id: post.collectionId,
+            id: props.post.collectionId,
             coverPhoto: {
-              key: post.image.key,
-              bucket: post.image.bucket,
-              region: post.image.region,
+              key: props.post.image.key,
+              bucket: props.post.image.bucket,
+              region: props.post.image.region,
             },
           },
         })
       );
-      alert("Cover Image Changed");
+      props.onSnack("Cover Image Changed!");
     } catch (e) {
       console.log(e);
     }
@@ -106,7 +106,7 @@ const Post = ({ post }) => {
   return (
     <section className="post__card">
       <Dialog open={open} onClose={handleClose}>
-        <EditPost post={post} />
+        <EditPost post={props.post} />
       </Dialog>
       <Menu
         id="simple-menu"
@@ -135,19 +135,23 @@ const Post = ({ post }) => {
         </MenuItem>
       </Menu>
       <Card className={classes.root}>
-        <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
+        <Link
+          to={`/profile/${userId}/${props.post.collectionId}/${props.post.id}`}
+        >
           <CardMedia className={classes.media}>
             <S3Image
               className="post__image"
               level="private"
-              imgKey={post.image.key}
+              imgKey={props.post.image.key}
             />
           </CardMedia>
         </Link>
         <CardContent className={classes.content}>
-          <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
+          <Link
+            to={`/profile/${userId}/${props.post.collectionId}/${props.post.id}`}
+          >
             <Typography gutterBottom variant="h6">
-              {post.caption}
+              {props.post.title}
             </Typography>
           </Link>
           <CardActions>

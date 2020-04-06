@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Collection = ({ collection }) => {
+const Collection = (props) => {
   const classes = useStyles();
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -68,12 +68,14 @@ const Collection = ({ collection }) => {
     try {
       const collectionPosts = await API.graphql(
         graphqlOperation(listPosts, {
-          filter: { collectionId: { eq: collection.id } },
+          filter: { collectionId: { eq: props.collection.id } },
         })
       );
       const results = collectionPosts.data.listPosts.items;
       await API.graphql(
-        graphqlOperation(deleteCollection, { input: { id: collection.id } })
+        graphqlOperation(deleteCollection, {
+          input: { id: props.collection.id },
+        })
       );
       await results.forEach((post) => {
         Storage.remove(post.image.key, { level: "private" })
@@ -84,7 +86,7 @@ const Collection = ({ collection }) => {
             console.log(err);
           });
       });
-      alert("Collection deleted");
+      props.onSnack("Collection Deleted");
     } catch (e) {
       console.log(e);
     }
@@ -93,7 +95,7 @@ const Collection = ({ collection }) => {
   return (
     <section className="collection__card">
       <Dialog open={open} onClose={handleClose}>
-        <EditCollection onClose={handleClose} collection={collection} />
+        <EditCollection onClose={handleClose} collection={props.collection} />
       </Dialog>
       <Menu
         id="simple-menu"
@@ -116,24 +118,24 @@ const Collection = ({ collection }) => {
         </MenuItem>{" "}
       </Menu>
       <Card className={classes.root}>
-        <Link to={`/profile/${userId}/${collection.id}`}>
-          {collection.coverPhoto ? (
+        <Link to={`/profile/${userId}/${props.collection.id}`}>
+          {props.collection.coverPhoto ? (
             <CardMedia className={classes.media}>
               <S3Image
                 className="collection__image"
                 level="private"
-                imgKey={collection.coverPhoto.key}
+                imgKey={props.collection.coverPhoto.key}
               />
             </CardMedia>
           ) : null}
         </Link>
         <CardContent className={classes.content}>
-          <Link to={`/profile/${userId}/${collection.id}`}>
+          <Link to={`/profile/${userId}/${props.collection.id}`}>
             <Typography gutterBottom variant="h6">
-              {collection.name}
+              {props.collection.name}
             </Typography>
             <Typography gutterBottom variant="body1">
-              <em>{collection.description}</em>
+              <em>{props.collection.description}</em>
             </Typography>
           </Link>
           <CardActions>

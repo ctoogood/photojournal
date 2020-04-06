@@ -56,6 +56,7 @@ const AddCollection = (props) => {
         })
       );
       setLoading(false);
+      props.onAdd();
       props.onClose();
     } catch (e) {
       console.log(e);

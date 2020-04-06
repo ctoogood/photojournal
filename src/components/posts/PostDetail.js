@@ -97,7 +97,7 @@ const PostDetail = () => {
           >
             {thisCollection.name}
           </Link>
-          <Typography color="textPrimary">{post.caption}</Typography>
+          <Typography color="textPrimary">{post.title}</Typography>
         </Breadcrumbs>
       )}
       <section className="postDetail__card">
@@ -115,6 +115,9 @@ const PostDetail = () => {
               </CardMedia>
               <CardContent>
                 <Typography color="textPrimary" variant="h6">
+                  {post.title}
+                </Typography>
+                <Typography color="textSecondary" variant="subtitle1">
                   {post.caption}
                 </Typography>
                 <Typography color="textSecondary" variant="subtitle1">
