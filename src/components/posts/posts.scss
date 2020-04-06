@@ -36,7 +36,7 @@
 
 .post__image {
     object-fit: cover;
-    height:100%;
+    height:250px;
     width:100%;
 }
 
@@ -53,6 +53,18 @@ img {
     margin: auto;
     margin-top:2rem;
     margin-bottom:2rem;
+}
+
+.postDetail__main {
+    max-width: 1000px;
+    margin: auto;
+    margin-top:.5rem;
+    padding-top: 1rem;
+}
+
+.postDetail__image {
+    max-height:90vh;
+    object-fit: contain!important;
 }
 
 .addPost__main {

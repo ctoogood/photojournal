@@ -1,9 +1,11 @@
 type Collection
 @model
+@key(name: "byName", fields: ["owner", "name"], queryField: "collectionByName")
 @auth(rules: [{allow: owner}]) {
   id:ID!
   name:String!
   description:String
+  owner:String
   coverPhoto:S3Object
   posts: [Post] @connection(keyName: "byCollection", fields: ["id"])
 }
@@ -11,6 +13,7 @@ type Collection
 type Post
 @model
 @key(name: "byCollection", fields: ["collectionId"])
+@key(name: "byDate", fields: ["collectionId", "date"], queryField: "collectionByDate")
 @auth(rules: [{allow: owner}]) {
   id:ID!
   collectionId:ID!

@@ -33,7 +33,7 @@ const Profile = () => {
   return (
     <section className="profile__main">
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-        <AddCollection onClose={handleClose} />
+        <AddCollection className={classes.add} onClose={handleClose} />
       </Dialog>
       <h1 style={{ textAlign: "left", marginLeft: "0.5rem" }}>
         My Collections

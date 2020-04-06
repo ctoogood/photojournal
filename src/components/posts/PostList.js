@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { API, graphqlOperation, Auth, Cache } from "aws-amplify";
 import { makeStyles } from "@material-ui/styles";
 
-import { CircularProgress, IconButton, Dialog } from "@material-ui/core";
+import {
+  CircularProgress,
+  IconButton,
+  Dialog,
+  Breadcrumbs,
+  Typography,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import { listPosts, getCollection } from "../../graphql/queries";
+import { getCollection, collectionByDate } from "../../graphql/queries";
 import * as subscriptions from "../../graphql/subscriptions";
 import Post from "./Post";
 import "./posts.scss";
@@ -33,6 +39,7 @@ const PostsList = () => {
   const [thisCollection, setThisCollection] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState({});
 
   const handleClose = () => {
     setOpen(false);
@@ -49,14 +56,20 @@ const PostsList = () => {
     [location]
   );
 
+  const getUser = async () => {
+    const user = await Auth.currentAuthenticatedUser();
+    setUser(user);
+  };
+
   const getPosts = useCallback(async () => {
     try {
       const response = await API.graphql(
-        graphqlOperation(listPosts, {
-          filter: { collectionId: { eq: collectionid } },
+        graphqlOperation(collectionByDate, {
+          collectionId: collectionid,
+          sortDirection: "DESC",
         })
       );
-      const list = response.data.listPosts.items;
+      const list = response.data.collectionByDate.items;
       setPosts(list);
       const collection = await API.graphql(
         graphqlOperation(getCollection, { id: collectionid })
@@ -73,6 +86,7 @@ const PostsList = () => {
 
   useEffect(() => {
     getPosts();
+    getUser();
   }, [getPosts]);
 
   useEffect(() => {
@@ -111,6 +125,14 @@ const PostsList = () => {
 
   return (
     <section className="postsList__main">
+      {isLoading ? null : (
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link color="inherit" to={`/profile/${user.username}`}>
+            Profile
+          </Link>
+          <Typography color="textPrimary">{thisCollection.name}</Typography>
+        </Breadcrumbs>
+      )}
       <Dialog className={classes.dialog} open={open} onClose={handleClose}>
         <AddPost onClose={handleClose} collection={collectionid} />
       </Dialog>

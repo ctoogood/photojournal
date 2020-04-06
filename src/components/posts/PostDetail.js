@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { API, graphqlOperation } from "aws-amplify";
+import { useParams, Link } from "react-router-dom";
+import { Auth, API, graphqlOperation } from "aws-amplify";
+import { makeStyles } from "@material-ui/styles";
 
 import {
   Card,
@@ -9,18 +10,32 @@ import {
   CardContent,
   Typography,
   CircularProgress,
+  Breadcrumbs,
 } from "@material-ui/core";
 
-import { getPost } from "../../graphql/queries";
+import { getPost, getCollection } from "../../graphql/queries";
 import "./posts.scss";
 import { S3Image } from "aws-amplify-react";
 
+const useStyles = makeStyles(() => ({
+  root: {},
+  imageContainer: {
+    border: "1rem solid white",
+  },
+  breadcrumbs: {
+    marginLeft: "0.5rem",
+  },
+}));
+
 const PostDetail = () => {
-  const { postid } = useParams();
+  const { postid, collectionid } = useParams();
+  const classes = useStyles();
 
   const [post, setPost] = useState({});
+  const [thisCollection, setThisCollection] = useState({});
   const [image, setImage] = useState({});
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
 
   const newDate = new Date(post.date);
   var month = [
@@ -48,34 +63,71 @@ const PostDetail = () => {
       const postResult = postData.data.getPost;
       setPost(postResult);
       setImage(postResult.image);
+      const collection = await API.graphql(
+        graphqlOperation(getCollection, { id: collectionid })
+      );
+      const collectionData = collection.data.getCollection;
+      setThisCollection(collectionData);
       setLoading(false);
     } catch (e) {
       console.log(e);
     }
-  }, [postid]);
+  }, [postid, collectionid]);
+
+  const getUser = async () => {
+    const user = await Auth.currentAuthenticatedUser();
+    setUser(user);
+  };
 
   useEffect(() => {
     thisPost();
+    getUser();
   }, [thisPost]);
 
   return (
-    <section className="postDetail__card">
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Card>
-          <CardActionArea>
-            <CardMedia>
-              <S3Image level="private" imgKey={image.key} />{" "}
-            </CardMedia>
-            <CardContent>
-              <Typography variant="subtitle1">{post.caption}</Typography>
-              <Typography variant="subtitle1">{date}</Typography>
-              <Typography variant="subtitle1">{post.location}</Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
+    <section className="postDetail__main">
+      {loading ? null : (
+        <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
+          <Link color="inherit" to={`/profile/${user.username}`}>
+            Profile
+          </Link>
+          <Link
+            color="inherit"
+            to={`/profile/${user.username}/${collectionid}`}
+          >
+            {thisCollection.name}
+          </Link>
+          <Typography color="textPrimary">{post.caption}</Typography>
+        </Breadcrumbs>
       )}
+      <section className="postDetail__card">
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Card>
+            <CardActionArea>
+              <CardMedia className={classes.imageContainer}>
+                <S3Image
+                  className="postDetail__image"
+                  level="private"
+                  imgKey={image.key}
+                />
+              </CardMedia>
+              <CardContent>
+                <Typography color="textPrimary" variant="h6">
+                  {post.caption}
+                </Typography>
+                <Typography color="textSecondary" variant="subtitle1">
+                  {date}
+                </Typography>
+                <Typography color="textSecondary" variant="subtitle1">
+                  {post.location}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        )}
+      </section>
     </section>
   );
 };

@@ -33,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   media: {
-    maxHeight: "300px",
-    height: "100%",
+    height: "250px",
     overflow: "hidden",
   },
   content: {
     textAlign: "left",
     fontWeight: "lighter",
     position: "relative",
+    height: "100px",
   },
   settings: {
     position: "absolute",
@@ -54,23 +54,6 @@ const Post = ({ post }) => {
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
-
-  const newDate = new Date(post.date);
-  var month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ][newDate.getMonth()];
-  const date = `${newDate.getDate()} ${month} ${newDate.getFullYear()}`;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -165,12 +148,6 @@ const Post = ({ post }) => {
           <Link to={`/profile/${userId}/${post.collectionId}/${post.id}`}>
             <Typography gutterBottom variant="h6">
               {post.caption}
-            </Typography>
-            <Typography gutterBottom variant="body1">
-              <em>{date}</em>
-            </Typography>
-            <Typography gutterBottom variant="body1">
-              <em>{post.location}</em>
             </Typography>
           </Link>
           <CardActions>

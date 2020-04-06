@@ -29,14 +29,14 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   media: {
-    maxHeight: "300px",
-    height: "100%",
+    height: "250px",
     overflow: "hidden",
   },
   content: {
     textAlign: "left",
     fontWeight: "lighter",
     position: "relative",
+    height: "150px",
   },
   settings: {
     position: "absolute",

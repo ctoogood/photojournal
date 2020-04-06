@@ -12,11 +12,10 @@ import {
 } from "@material-ui/core";
 
 import { createCollection } from "../../graphql/mutations";
+import "./collections.scss";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: "60px",
-  },
+  root: {},
   formControl: {
     marginBottom: "1rem",
   },
@@ -64,7 +63,7 @@ const AddCollection = (props) => {
   };
 
   return (
-    <section className="addPost__main">
+    <section className={classes.root}>
       <Card className={classes.card}>
         {loading ? (
           <CircularProgress />

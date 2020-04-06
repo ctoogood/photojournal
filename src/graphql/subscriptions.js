@@ -7,6 +7,7 @@ export const onCreateCollection = /* GraphQL */ `
       id
       name
       description
+      owner
       coverPhoto {
         bucket
         key
@@ -23,7 +24,6 @@ export const onCreateCollection = /* GraphQL */ `
         }
         nextToken
       }
-      owner
     }
   }
 `;
@@ -33,6 +33,7 @@ export const onUpdateCollection = /* GraphQL */ `
       id
       name
       description
+      owner
       coverPhoto {
         bucket
         key
@@ -49,7 +50,6 @@ export const onUpdateCollection = /* GraphQL */ `
         }
         nextToken
       }
-      owner
     }
   }
 `;
@@ -59,6 +59,7 @@ export const onDeleteCollection = /* GraphQL */ `
       id
       name
       description
+      owner
       coverPhoto {
         bucket
         key
@@ -75,7 +76,6 @@ export const onDeleteCollection = /* GraphQL */ `
         }
         nextToken
       }
-      owner
     }
   }
 `;

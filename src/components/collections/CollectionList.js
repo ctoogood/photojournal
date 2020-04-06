@@ -3,7 +3,7 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 
 import { CircularProgress } from "@material-ui/core";
 
-import { listCollections } from "../../graphql/queries";
+import { collectionByName } from "../../graphql/queries";
 import * as subscriptions from "../../graphql/subscriptions";
 import Collection from "./Collection";
 import "./collections.scss";
@@ -15,8 +15,14 @@ const CollectionList = () => {
   const getCollections = async () => {
     setIsLoading(true);
     try {
-      const response = await API.graphql(graphqlOperation(listCollections));
-      const list = response.data.listCollections.items;
+      const user = await Auth.currentAuthenticatedUser();
+      const response = await API.graphql(
+        graphqlOperation(collectionByName, {
+          owner: user.username,
+          sortDirection: "ASC",
+        })
+      );
+      const list = response.data.collectionByName.items;
       setCollections(list);
       setIsLoading(false);
     } catch (e) {
