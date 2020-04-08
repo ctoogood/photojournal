@@ -54,6 +54,7 @@ const Post = (props) => {
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const thumb = props.post.image.key.replace("-original.jpg", "-small.jpg");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,6 +77,9 @@ const Post = (props) => {
       Storage.remove(props.post.image.key, { level: "private" })
         .then((result) => console.log(props.post.image.key, result))
         .catch((err) => console.log(err));
+      Storage.remove(thumb, { level: "private" })
+        .then((result) => console.log(props.post.image.key, result))
+        .catch((err) => console.log(err));
 
       props.onSnack("Post deleted");
     } catch (e) {
@@ -90,7 +94,7 @@ const Post = (props) => {
           input: {
             id: props.post.collectionId,
             coverPhoto: {
-              key: props.post.image.key,
+              key: thumb,
               bucket: props.post.image.bucket,
               region: props.post.image.region,
             },
@@ -139,11 +143,7 @@ const Post = (props) => {
           to={`/profile/${userId}/${props.post.collectionId}/${props.post.id}`}
         >
           <CardMedia className={classes.media}>
-            <S3Image
-              className="post__image"
-              level="private"
-              imgKey={props.post.image.key}
-            />
+            <S3Image className="post__image" level="private" imgKey={thumb} />
           </CardMedia>
         </Link>
         <CardContent className={classes.content}>

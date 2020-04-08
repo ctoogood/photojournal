@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 import { MoreVert as MoreVertIcon, Delete, Edit } from "@material-ui/icons";
 import EditCollection from "./EditCollection";
-import { deleteCollection } from "../../graphql/mutations";
+import { deleteCollection, deletePost } from "../../graphql/mutations";
 
 import "./collections.scss";
 import { listPosts } from "../../graphql/queries";
@@ -77,8 +77,19 @@ const Collection = (props) => {
           input: { id: props.collection.id },
         })
       );
-      await results.forEach((post) => {
+      await results.forEach(async (post) => {
+        const thumb = post.image.key.replace("-original.jpg", "-small.jpg");
+        await API.graphql(
+          graphqlOperation(deletePost, { input: { id: post.id } })
+        );
         Storage.remove(post.image.key, { level: "private" })
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        Storage.remove(thumb, { level: "private" })
           .then((result) => {
             console.log(result);
           })

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Auth, Storage } from "aws-amplify";
-import { API, graphqlOperation } from "aws-amplify";
+import { Auth, Storage, API, graphqlOperation } from "aws-amplify";
+import { S3Image } from "aws-amplify-react";
 import { v4 as uuid } from "uuid";
 import { makeStyles } from "@material-ui/styles";
 import config from "../../aws-exports";
@@ -10,9 +10,16 @@ import {
   InputLabel,
   OutlinedInput,
   Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  IconButton,
+  Typography,
   Button,
   CircularProgress,
 } from "@material-ui/core";
+
+import { MoreVert, CloseOutlined } from "@material-ui/icons";
 
 import { createPost } from "../../graphql/mutations";
 
@@ -30,13 +37,33 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#4fa1c4",
     color: "white",
     fontWeight: "normal",
-    marginBottom: "2rem",
+    marginbottom: "2rem",
+    marginRight: "0.5rem",
     "&:hover": {
       color: "#4fa1c4",
     },
   },
   card: {
     padding: "2rem",
+    position: "relative",
+  },
+  media: {
+    overflow: "hidden",
+  },
+  content: {
+    textAlign: "left",
+    fontWeight: "lighter",
+    position: "relative",
+  },
+  settings: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  close: {
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
 }));
 
@@ -50,6 +77,8 @@ const AddPost = (props) => {
   const [date, setDate] = useState("");
   const [img, setImg] = useState();
   const [file, setFile] = useState({});
+  const [preview, setPreview] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const {
     aws_user_files_s3_bucket_region: region,
@@ -72,8 +101,7 @@ const AddPost = (props) => {
   };
 
   const setKey = async () => {
-    const user = await Auth.currentAuthenticatedUser();
-    const fileName = `upload/${user.username}/${props.collection}/${uuid()}`;
+    const fileName = `upload/${props.collection}/${uuid()}-original.jpg`;
     setImg(fileName);
   };
 
@@ -83,11 +111,30 @@ const AddPost = (props) => {
     setKey();
   };
 
+  const handleFirstSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await uploadFile(file);
+    setLoading(false);
+    setPreview(true);
+  };
+
+  const editPreview = () => {
+    setEdit(true);
+    setPreview(false);
+  };
+
+  const handleClose = async () => {
+    await Storage.remove(img, { level: "private" })
+      .then((result) => console.log(img, result))
+      .catch((err) => console.log(err));
+    props.onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await uploadFile(file);
       await API.graphql(
         graphqlOperation(createPost, {
           input: {
@@ -111,84 +158,153 @@ const AddPost = (props) => {
 
   return (
     <section className="addPost__main">
-      <Card className={classes.card}>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <h2>Add A Post</h2>
-            <div>
-              <input type="file" accept="image/*" onChange={onChange} />
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Title</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  autoFocus
-                  value={title}
-                  multiline={true}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                  }}
-                  label="Title"
-                  type="text"
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Caption</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  autoFocus
-                  value={caption}
-                  multiline={true}
-                  onChange={(e) => {
-                    setCaption(e.target.value);
-                  }}
-                  label="Caption"
-                  type="text"
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Location</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  value={location}
-                  onChange={(e) => {
-                    setLocation(e.target.value);
-                  }}
-                  label="Location"
-                  type="text"
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
-                  }}
-                  label="Date"
-                  type="date"
-                />
-              </FormControl>
-            </div>
-            <Button className={classes.button} color="secondary" type="submit">
+      {!preview ? (
+        <Card className={classes.card}>
+          <IconButton
+            onClick={handleClose}
+            className={classes.close}
+            aria-label="settings"
+          >
+            <CloseOutlined />
+          </IconButton>
+
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <form onSubmit={handleFirstSubmit}>
+              <h2>Add A Post</h2>
+              {!edit ? (
+                <div>
+                  <input type="file" accept="image/*" onChange={onChange} />
+                </div>
+              ) : (
+                <CardMedia className={classes.media}>
+                  <S3Image
+                    className="postDetail__image"
+                    level="private"
+                    imgKey={img}
+                  />
+                </CardMedia>
+              )}
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <InputLabel htmlFor="component-outlined">Title</InputLabel>
+                  <OutlinedInput
+                    className={classes.input}
+                    id="component-outlined"
+                    autoFocus
+                    value={title}
+                    multiline={true}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                    }}
+                    label="Title"
+                    type="text"
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <InputLabel htmlFor="component-outlined">Caption</InputLabel>
+                  <OutlinedInput
+                    className={classes.input}
+                    id="component-outlined"
+                    autoFocus
+                    value={caption}
+                    multiline={true}
+                    onChange={(e) => {
+                      setCaption(e.target.value);
+                    }}
+                    label="Caption"
+                    type="text"
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <InputLabel htmlFor="component-outlined">Location</InputLabel>
+                  <OutlinedInput
+                    className={classes.input}
+                    id="component-outlined"
+                    value={location}
+                    onChange={(e) => {
+                      setLocation(e.target.value);
+                    }}
+                    label="Location"
+                    type="text"
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <OutlinedInput
+                    className={classes.input}
+                    id="component-outlined"
+                    value={date}
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                    }}
+                    label="Date"
+                    type="date"
+                  />
+                </FormControl>
+              </div>
+              <Button
+                className={classes.button}
+                color="secondary"
+                type="submit"
+              >
+                Preview
+              </Button>
+            </form>
+          )}
+        </Card>
+      ) : (
+        <Card className={classes.card}>
+          <IconButton
+            onClick={handleClose}
+            className={classes.close}
+            aria-label="settings"
+          >
+            <CloseOutlined />
+          </IconButton>
+
+          <CardMedia className={classes.media}>
+            <S3Image
+              className="postDetail__image"
+              level="private"
+              imgKey={img}
+            />
+          </CardMedia>
+          <CardContent className={classes.content}>
+            <Typography gutterBottom variant="h6">
+              {title}
+            </Typography>
+            <Typography color="textSecondary" variant="subtitle1">
+              {caption}
+            </Typography>
+            <Typography color="textSecondary" variant="subtitle1">
+              {date}
+            </Typography>
+            <Typography color="textSecondary" variant="subtitle1">
+              {location}
+            </Typography>
+            <CardActions>
+              <IconButton className={classes.settings} aria-label="settings">
+                <MoreVert />
+              </IconButton>
+            </CardActions>
+          </CardContent>
+          <div>
+            <Button className={classes.button} onClick={editPreview}>
+              Edit
+            </Button>
+            <Button className={classes.button} onClick={handleSubmit}>
               Add Post
             </Button>
-          </form>
-        )}
-      </Card>
+          </div>
+        </Card>
+      )}
     </section>
   );
 };

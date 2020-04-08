@@ -1,6 +1,6 @@
 .hero__main {
     position: relative;
-    height: 90vh;
+    min-height: 90vh;
     background-color: #1D404F;
     color:white;
     text-align: center;
@@ -8,6 +8,14 @@
     h1, h2 {
         color:white;
         font-weight: bold;
+    }
+
+    h1 {
+        font-size: 2rem;
+        @media only screen and (min-width:480px) {
+            font-size:3rem
+        }
+
     }
 
     img {

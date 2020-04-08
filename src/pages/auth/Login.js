@@ -62,10 +62,11 @@ const Login = () => {
       history.push(`/profile/${user.userName}`);
     } catch (e) {
       console.log(e.message);
-      alert(e.message);
       setIsLoading(false);
       if (e.message === "User is not confirmed.") {
         setVerify(true);
+      } else {
+        alert(e.message);
       }
     }
   };

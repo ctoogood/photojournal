@@ -149,7 +149,7 @@ const PostsList = () => {
           <Typography color="textPrimary">{thisCollection.name}</Typography>
         </Breadcrumbs>
       )}
-      <Dialog className={classes.dialog} open={open} onClose={handleClose}>
+      <Dialog className={classes.dialog} open={open}>
         <AddPost
           onClose={handleClose}
           onSnack={snack}
