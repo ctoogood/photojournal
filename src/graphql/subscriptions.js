@@ -95,7 +95,17 @@ export const onCreatePost = /* GraphQL */ `
       date
       location
       tags
-      image {
+      original {
+        bucket
+        key
+        region
+      }
+      large {
+        bucket
+        key
+        region
+      }
+      thumbnail {
         bucket
         key
         region
@@ -114,7 +124,17 @@ export const onUpdatePost = /* GraphQL */ `
       date
       location
       tags
-      image {
+      original {
+        bucket
+        key
+        region
+      }
+      large {
+        bucket
+        key
+        region
+      }
+      thumbnail {
         bucket
         key
         region
@@ -133,7 +153,17 @@ export const onDeletePost = /* GraphQL */ `
       date
       location
       tags
-      image {
+      original {
+        bucket
+        key
+        region
+      }
+      large {
+        bucket
+        key
+        region
+      }
+      thumbnail {
         bucket
         key
         region

@@ -54,7 +54,6 @@ const Post = (props) => {
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
-  const thumb = props.post.image.key.replace("-original.jpg", "-small.jpg");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -74,11 +73,14 @@ const Post = (props) => {
       await API.graphql(
         graphqlOperation(deletePost, { input: { id: props.post.id } })
       );
-      Storage.remove(props.post.image.key, { level: "private" })
-        .then((result) => console.log(props.post.image.key, result))
+      Storage.remove(props.post.original.key, { level: "private" })
+        .then((result) => console.log(props.post.original.key, result))
         .catch((err) => console.log(err));
-      Storage.remove(thumb, { level: "private" })
-        .then((result) => console.log(props.post.image.key, result))
+      Storage.remove(props.post.thumbnail.key, { level: "private" })
+        .then((result) => console.log(props.post.thumbnail.key, result))
+        .catch((err) => console.log(err));
+      Storage.remove(props.post.large.key, { level: "private" })
+        .then((result) => console.log(props.post.large.key, result))
         .catch((err) => console.log(err));
 
       props.onSnack("Post deleted");
@@ -94,9 +96,9 @@ const Post = (props) => {
           input: {
             id: props.post.collectionId,
             coverPhoto: {
-              key: thumb,
-              bucket: props.post.image.bucket,
-              region: props.post.image.region,
+              key: props.post.thumbnail.key,
+              bucket: props.post.thumbnail.bucket,
+              region: props.post.thumbnail.region,
             },
           },
         })
@@ -143,7 +145,11 @@ const Post = (props) => {
           to={`/profile/${userId}/${props.post.collectionId}/${props.post.id}`}
         >
           <CardMedia className={classes.media}>
-            <S3Image className="post__image" level="private" imgKey={thumb} />
+            <S3Image
+              className="post__image"
+              level="private"
+              imgKey={props.post.thumbnail.key}
+            />
           </CardMedia>
         </Link>
         <CardContent className={classes.content}>

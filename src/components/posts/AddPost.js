@@ -128,6 +128,16 @@ const AddPost = (props) => {
     await Storage.remove(img, { level: "private" })
       .then((result) => console.log(img, result))
       .catch((err) => console.log(err));
+    await Storage.remove(img.replace("-original.jpg", "-1200.jpg"), {
+      level: "private",
+    })
+      .then((result) => console.log(img, result))
+      .catch((err) => console.log(err));
+    await Storage.remove(img.replace("-original.jpg", "-500.jpg"), {
+      level: "private",
+    })
+      .then((result) => console.log(img, result))
+      .catch((err) => console.log(err));
     props.onClose();
   };
 
@@ -143,7 +153,17 @@ const AddPost = (props) => {
             caption: caption,
             location: location,
             date: date,
-            image: { key: img, bucket: bucket, region: region },
+            original: { key: img, bucket: bucket, region: region },
+            large: {
+              key: img.replace("-original.jpg", "-1200.jpg"),
+              bucket: bucket,
+              region: region,
+            },
+            thumbnail: {
+              key: img.replace("-original.jpg", "-500.jpg"),
+              bucket: bucket,
+              region: region,
+            },
           },
         })
       );

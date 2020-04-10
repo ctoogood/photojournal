@@ -64,7 +64,17 @@ export const getPost = /* GraphQL */ `
       date
       location
       tags
-      image {
+      original {
+        bucket
+        key
+        region
+      }
+      large {
+        bucket
+        key
+        region
+      }
+      thumbnail {
         bucket
         key
         region
@@ -88,7 +98,17 @@ export const listPosts = /* GraphQL */ `
         date
         location
         tags
-        image {
+        original {
+          bucket
+          key
+          region
+        }
+        large {
+          bucket
+          key
+          region
+        }
+        thumbnail {
           bucket
           key
           region
@@ -159,7 +179,17 @@ export const collectionByDate = /* GraphQL */ `
         date
         location
         tags
-        image {
+        original {
+          bucket
+          key
+          region
+        }
+        large {
+          bucket
+          key
+          region
+        }
+        thumbnail {
           bucket
           key
           region

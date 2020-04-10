@@ -78,18 +78,24 @@ const Collection = (props) => {
         })
       );
       await results.forEach(async (post) => {
-        const thumb = post.image.key.replace("-original.jpg", "-small.jpg");
         await API.graphql(
           graphqlOperation(deletePost, { input: { id: post.id } })
         );
-        Storage.remove(post.image.key, { level: "private" })
+        Storage.remove(post.original.key, { level: "private" })
           .then((result) => {
             console.log(result);
           })
           .catch((err) => {
             console.log(err);
           });
-        Storage.remove(thumb, { level: "private" })
+        Storage.remove(post.thumbnail.key, { level: "private" })
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        Storage.remove(post.large.key, { level: "private" })
           .then((result) => {
             console.log(result);
           })

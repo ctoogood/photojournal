@@ -22,7 +22,9 @@ type Post
   date:String
   location:String
   tags:String
-  image:S3Object
+  original:S3Object
+  large:S3Object
+  thumbnail:S3Object
 }
 
 type S3Object {

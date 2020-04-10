@@ -33,7 +33,7 @@ const PostDetail = () => {
 
   const [post, setPost] = useState({});
   const [thisCollection, setThisCollection] = useState({});
-  const [image, setImage] = useState({});
+  const [imageKey, setImageKey] = useState({});
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
 
@@ -62,7 +62,7 @@ const PostDetail = () => {
       );
       const postResult = postData.data.getPost;
       setPost(postResult);
-      setImage(postResult.image);
+      setImageKey(postResult.large.key);
       const collection = await API.graphql(
         graphqlOperation(getCollection, { id: collectionid })
       );
@@ -110,7 +110,7 @@ const PostDetail = () => {
                 <S3Image
                   className="postDetail__image"
                   level="private"
-                  imgKey={image.key}
+                  imgKey={imageKey}
                 />
               </CardMedia>
               <CardContent>
