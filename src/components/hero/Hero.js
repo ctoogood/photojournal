@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
+import ProgressiveImage from "react-progressive-graceful-image";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { Button } from "@material-ui/core";
 // import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import camera from "../../images/jakob-owens-FKyHyNowp-4-unsplash.jpg";
+import camera_small from "../../images/jakob-owens-fkyhynowp-4-unsplash_small.jpg";
 import "./Hero.scss";
 import { AuthContext } from "../../context/auth";
 
@@ -28,7 +30,9 @@ const Hero = () => {
   const { user } = appContext;
   return (
     <section className="hero__main">
-      <img src={camera} alt="hand holding camera" />
+      <ProgressiveImage src={camera} placeholder={camera_small}>
+        {(src) => <img src={src} alt="Hand Holding Camera" />}
+      </ProgressiveImage>
       <div className="hero__headline">
         <h1>Store, Organise And Share Your Memories</h1>
         {user ? (

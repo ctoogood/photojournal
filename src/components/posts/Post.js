@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Auth, API, graphqlOperation, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react";
@@ -22,6 +22,7 @@ import {
   Delete,
   Edit,
   PhotoAlbum,
+  CloudDownload,
 } from "@material-ui/icons";
 
 import "./posts.scss";
@@ -54,6 +55,7 @@ const Post = (props) => {
   const userId = Auth.user.username;
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -109,6 +111,16 @@ const Post = (props) => {
     }
   };
 
+  useEffect(() => {
+    const downloadOriginal = () => {
+      Storage.get(props.post.original.key, { level: "private" })
+        .then((result) => setImageUrl(result))
+        .catch((err) => console.log(err));
+    };
+
+    downloadOriginal();
+  }, [props.post.original.key]);
+
   return (
     <section className="post__card">
       <Dialog open={open} onClose={handleClose}>
@@ -139,6 +151,14 @@ const Post = (props) => {
           </ListItemIcon>
           <ListItemText primary="Set As Cover Image" />
         </MenuItem>
+        <a href={imageUrl} download>
+          <MenuItem>
+            <ListItemIcon>
+              <CloudDownload />
+            </ListItemIcon>
+            <ListItemText primary="Download Image" />
+          </MenuItem>
+        </a>
       </Menu>
       <Card className={classes.root}>
         <Link
