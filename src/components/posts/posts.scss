@@ -34,10 +34,16 @@
     }
 }
 
+.postsList__more {
+    margin:auto;
+    width: max-content;
+}
+
 .post__image {
     object-fit: cover;
     height:250px;
     width:100%;
+    border:0.5rem solid white;
 }
 
 img {
@@ -65,6 +71,23 @@ img {
 .postDetail__image {
     max-height:90vh;
     object-fit: contain!important;
+}
+
+.postDetail__arrows {
+    position: absolute;
+    width:100%;
+    top:50%;
+}
+
+.postDetail__arrows__left {
+    position: absolute;
+    left:0;
+}
+
+.postDetail__arrows__right {
+    position: absolute;
+
+    right:0;
 }
 
 .addPost__main {

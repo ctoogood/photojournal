@@ -11,9 +11,17 @@ import {
   Typography,
   CircularProgress,
   Breadcrumbs,
+  IconButton,
 } from "@material-ui/core";
 
-import { getPost, getCollection } from "../../graphql/queries";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+
+import {
+  getPost,
+  getCollection,
+  collectionByDate,
+} from "../../graphql/queries";
 import "./posts.scss";
 import { S3Image } from "aws-amplify-react";
 
@@ -21,21 +29,35 @@ const useStyles = makeStyles(() => ({
   root: {},
   imageContainer: {
     border: "1rem solid white",
+    position: "relative",
   },
   breadcrumbs: {
     marginLeft: "0.5rem",
+  },
+  arrow: {
+    color: "#FFFFFF",
+    "&:hover": {
+      color: "black",
+    },
+  },
+  icon: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    "&:hover": {
+      color: "white",
+    },
   },
 }));
 
 const PostDetail = () => {
   const { postid, collectionid } = useParams();
   const classes = useStyles();
-
   const [post, setPost] = useState({});
   const [thisCollection, setThisCollection] = useState({});
   const [imageKey, setImageKey] = useState({});
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
+  const [next, setNext] = useState("");
+  const [prev, setPrev] = useState("");
 
   const newDate = new Date(post.date);
   var month = [
@@ -68,6 +90,24 @@ const PostDetail = () => {
       );
       const collectionData = collection.data.getCollection;
       setThisCollection(collectionData);
+      const postList = await API.graphql(
+        graphqlOperation(collectionByDate, {
+          collectionId: collectionid,
+          sortDirection: "DESC",
+        })
+      );
+      const allPosts = postList.data.collectionByDate.items;
+      const thisPost = allPosts.findIndex((i) => i.id === postid);
+      const nextPostIndex = thisPost + 1;
+      if (allPosts.length > nextPostIndex) {
+        const nextPostId = allPosts[nextPostIndex].id;
+        setNext(nextPostId);
+      }
+      const prevPostIndex = thisPost - 1;
+      if (prevPostIndex >= 0) {
+        const prevPostId = allPosts[prevPostIndex].id;
+        setPrev(prevPostId);
+      }
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -112,6 +152,28 @@ const PostDetail = () => {
                   level="private"
                   imgKey={imageKey}
                 />
+                <section className="postDetail__arrows">
+                  {prev ? (
+                    <Link
+                      className="postDetail__arrows__left"
+                      to={`/profile/${user.username}/${collectionid}/${prev}`}
+                    >
+                      <IconButton className={classes.icon}>
+                        <ArrowBackIosIcon className={classes.arrow} />
+                      </IconButton>
+                    </Link>
+                  ) : null}
+                  {next ? (
+                    <Link
+                      className="postDetail__arrows__right"
+                      to={`/profile/${user.username}/${collectionid}/${next}`}
+                    >
+                      <IconButton className={classes.icon}>
+                        <ArrowForwardIosIcon className={classes.arrow} />
+                      </IconButton>
+                    </Link>
+                  ) : null}
+                </section>
               </CardMedia>
               <CardContent>
                 <Typography color="textPrimary" variant="h6">

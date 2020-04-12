@@ -3,10 +3,13 @@
 }
 
 .collectionList__grid {
-    @media only screen and (min-width:600px) {
+    @media only screen and (min-width:550px) {
         display:grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         grid-gap:1rem;
+    }
+    @media only screen and (min-width:850px) {
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }
 
@@ -14,4 +17,6 @@
     object-fit: cover;
     height:250px;
     width:100%;
+    border:0.5rem solid white;
+
 }

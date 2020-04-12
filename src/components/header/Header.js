@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Auth } from "aws-amplify";
+import { useTheme } from "@material-ui/core/styles";
 
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    color: theme.palette,
   },
   title: {
     fontWeight: 400,
@@ -66,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (loggedIn) => {
   const history = useHistory();
+  const theme = useTheme();
   const appContext = useContext(AuthContext);
   const { user } = appContext;
   const classes = useStyles();
@@ -109,13 +112,6 @@ const Header = (loggedIn) => {
         )}
       </List>
       <Divider />
-      <List>
-        {["About", "Contact"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
     </div>
   );
 
@@ -126,7 +122,7 @@ const Header = (loggedIn) => {
           <IconButton
             edge="start"
             className={classes.menuButton}
-            color="inherit"
+            color={theme.primary}
             aria-label="menu"
             onClick={toggleDrawer}
           >
@@ -151,7 +147,7 @@ const Header = (loggedIn) => {
               <Link to={`/profile/${user.username}`}>
                 <AccountCircleIcon
                   className={classes.accountButton}
-                  color="primary"
+                  color={theme.primary}
                 />
                 <p>{user.attributes.email}</p>
               </Link>

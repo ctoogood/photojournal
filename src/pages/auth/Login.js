@@ -18,18 +18,20 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "60px",
+    padding: "50px",
   },
   formControl: {
     marginBottom: "1rem",
   },
   input: {
     fontSize: ".9rem",
+    marginBottom: "1rem",
   },
   button: {
     backgroundColor: "#4fa1c4",
     color: "white",
     fontWeight: "normal",
+    display: "block",
     "&:hover": {
       color: "#4fa1c4",
     },
@@ -215,7 +217,7 @@ const Login = () => {
                   ) : (
                     <Button
                       className={classes.button}
-                      color="secondary"
+                      style={{ backgroundColor: "#4fa1c4", color: "white" }}
                       disabled={!validateForm()}
                       type="submit"
                     >
@@ -229,7 +231,7 @@ const Login = () => {
                 <p>No Account?</p>
                 <Button
                   className={classes.button}
-                  color="primary"
+                  style={{ backgroundColor: "#4fa1c4", color: "white" }}
                   type="button"
                   onClick={handleClick}
                 >

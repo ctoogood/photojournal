@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { API, graphqlOperation, Auth, Cache } from "aws-amplify";
 import { makeStyles } from "@material-ui/styles";
-
 import {
   CircularProgress,
   IconButton,
@@ -18,6 +17,7 @@ import Post from "./Post";
 import "./posts.scss";
 import AddPost from "./AddPost";
 import SimpleSnackbar from "../snack/Snackbar";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -29,20 +29,34 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     padding: "2rem",
   },
+  pagination: {
+    marginTop: "3rem",
+    marginBottom: "3rem",
+    margin: "auto",
+    width: "max-content",
+    backgroundColor: "#4fa1c4",
+    color: "white",
+    "&:hover": {
+      color: "#4fa1c4",
+    },
+  },
 }));
 
 const PostsList = () => {
   const classes = useStyles();
   const { collectionid } = useParams();
   const location = useLocation();
+  const limit = 6;
 
   const [posts, setPosts] = useState([]);
   const [thisCollection, setThisCollection] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState({});
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
+  const [nextToken, setNextToken] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -70,10 +84,13 @@ const PostsList = () => {
         graphqlOperation(collectionByDate, {
           collectionId: collectionid,
           sortDirection: "DESC",
+          limit: limit,
         })
       );
       const list = response.data.collectionByDate.items;
       setPosts(list);
+      setNextToken(response.data.collectionByDate.nextToken);
+      console.log(response.data.collectionByDate.nextToken);
       const collection = await API.graphql(
         graphqlOperation(getCollection, { id: collectionid })
       );
@@ -139,6 +156,25 @@ const PostsList = () => {
     setSuccess(false);
   };
 
+  const fetchMore = async () => {
+    if (nextToken) {
+      setIsFetching(true);
+      const response = await API.graphql(
+        graphqlOperation(collectionByDate, {
+          collectionId: collectionid,
+          nextToken,
+          sortDirection: "DESC",
+          limit: limit,
+        })
+      );
+      const list = response.data.collectionByDate.items;
+      setPosts(posts.concat(list));
+      setNextToken(response.data.collectionByDate.nextToken);
+      console.log(response.data.collectionByDate.nextToken);
+      setIsFetching(false);
+    }
+  };
+
   return (
     <section className="postsList__main">
       {isLoading ? null : (
@@ -176,6 +212,18 @@ const PostsList = () => {
           ))
         )}
       </section>
+      {nextToken ? (
+        <section className="postsList__more">
+          {isFetching ? (
+            <CircularProgress />
+          ) : (
+            <Button onClick={fetchMore} className={classes.pagination}>
+              Fetch More...
+            </Button>
+          )}
+        </section>
+      ) : null}
+
       <SimpleSnackbar open={success} onClose={snackClose} message={message} />
     </section>
   );

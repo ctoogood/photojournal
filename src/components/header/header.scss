@@ -4,6 +4,10 @@
     position: absolute;
     right:0;
     top:20%;
+
+    &:hover {
+        color: #426A79;
+    }
 }
 
 .header__account {
@@ -22,8 +26,10 @@
         display: inline!important;
         position: relative;
         top:-0.5rem;
-        color:#4fa1c4;
+        color:inherit;
         margin-left: 0.5rem;
         }
+
+
     }
 }

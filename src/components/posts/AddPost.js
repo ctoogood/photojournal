@@ -91,10 +91,12 @@ const AddPost = (props) => {
       try {
         await EXIF.getData(file, function () {
           metadata = EXIF.getAllTags(this);
-          var str = metadata.DateTimeOriginal.split(" ");
-          var dateStr = str[0].replace(/:/g, "-");
-          console.log(dateStr);
-          setDate(dateStr);
+          if (metadata.DateTimeOriginal) {
+            var str = metadata.DateTimeOriginal.split(" ");
+            var dateStr = str[0].replace(/:/g, "-");
+            console.log(dateStr);
+            setDate(dateStr);
+          }
         });
       } catch (e) {
         console.log(e);
@@ -148,19 +150,21 @@ const AddPost = (props) => {
   };
 
   const handleClose = async () => {
-    await Storage.remove(img, { level: "private" })
-      .then((result) => console.log(img, result))
-      .catch((err) => console.log(err));
-    await Storage.remove(img.replace("-original.jpg", "-1200.jpg"), {
-      level: "private",
-    })
-      .then((result) => console.log(img, result))
-      .catch((err) => console.log(err));
-    await Storage.remove(img.replace("-original.jpg", "-500.jpg"), {
-      level: "private",
-    })
-      .then((result) => console.log(img, result))
-      .catch((err) => console.log(err));
+    if (img) {
+      await Storage.remove(img, { level: "private" })
+        .then((result) => console.log(img, result))
+        .catch((err) => console.log(err));
+      await Storage.remove(img.replace("-original.jpg", "-1200.jpg"), {
+        level: "private",
+      })
+        .then((result) => console.log(img, result))
+        .catch((err) => console.log(err));
+      await Storage.remove(img.replace("-original.jpg", "-500.jpg"), {
+        level: "private",
+      })
+        .then((result) => console.log(img, result))
+        .catch((err) => console.log(err));
+    }
     props.onClose();
   };
 
@@ -261,6 +265,7 @@ const AddPost = (props) => {
                 <OutlinedInput
                   className={classes.input}
                   id="component-outlined"
+                  disabled={loading}
                   autoFocus
                   value={title}
                   multiline={true}
@@ -278,6 +283,7 @@ const AddPost = (props) => {
                 <OutlinedInput
                   className={classes.input}
                   id="component-outlined"
+                  disabled={loading}
                   value={caption}
                   multiline={true}
                   onChange={(e) => {
@@ -294,6 +300,7 @@ const AddPost = (props) => {
                 <OutlinedInput
                   className={classes.input}
                   id="component-outlined"
+                  disabled={loading}
                   value={location}
                   onChange={(e) => {
                     setLocation(e.target.value);
@@ -308,6 +315,7 @@ const AddPost = (props) => {
                 <OutlinedInput
                   className={classes.input}
                   id="component-outlined"
+                  disabled={loading}
                   defaultValue={date}
                   onChange={(e) => {
                     setDate(e.target.value);
@@ -324,7 +332,11 @@ const AddPost = (props) => {
             </CardActions>
           </CardContent>
           <div>
-            <Button className={classes.button} onClick={editPreview}>
+            <Button
+              disabled={loading}
+              className={classes.button}
+              onClick={editPreview}
+            >
               Change Image
             </Button>
             <Button className={classes.button} onClick={handleSubmit}>
