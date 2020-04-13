@@ -9,12 +9,15 @@ const AuthProvider = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [code, setCode] = useState("");
   const [verify, setVerify] = useState(false);
   const [login, setLogin] = useState(true);
   const [codeSubmit, setCodeSubmit] = useState(false);
   const [forgotPass, setForgotPass] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -63,6 +66,9 @@ const AuthProvider = (props) => {
 
   const handleClose = () => {
     setVerify(false);
+    setEmail("");
+    setPassword("");
+    setError("");
   };
 
   const handleEmail = (e) => {
@@ -71,6 +77,10 @@ const AuthProvider = (props) => {
 
   const handlePassword = (e) => {
     setPassword(e.target.value);
+  };
+
+  const handleNewPassword = (e) => {
+    setNewPassword(e.target.value);
   };
 
   const changeMode = () => {
@@ -113,13 +123,39 @@ const AuthProvider = (props) => {
     setCodeSubmit(false);
   };
 
+  const handleChangePass = (e) => {
+    e.preventDefault();
+    Auth.currentAuthenticatedUser()
+      .then((user) => {
+        return Auth.changePassword(user, password, newPassword);
+      })
+      .then(setPassword(""), setNewPassword(""), snack("Password Changed"))
+      .catch((err) => setError(err.message), setSuccess(false));
+  };
+
+  const snack = (msg) => {
+    setSuccess(true);
+    setMessage(msg);
+  };
+
+  const snackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccess(false);
+    setMessage("");
+  };
+
   useEffect(() => {
     let updateUser = async (authState) => {
       try {
         let user = await Auth.currentAuthenticatedUser();
         setUser(user);
+        setError("");
       } catch {
         setUser(null);
+        setError("");
       }
     };
 
@@ -142,6 +178,11 @@ const AuthProvider = (props) => {
         password,
         forgotPass,
         codeSubmit,
+        newPassword,
+        success,
+        message,
+        snackClose,
+        snack,
         handleClose,
         handleCode,
         handleVerify,
@@ -151,9 +192,11 @@ const AuthProvider = (props) => {
         handleForgotPass,
         handlePassReset,
         handleNewPassSubmit,
+        handleNewPassword,
         handleBackLogin,
         handleSignUp,
         handleConfirmSignUp,
+        handleChangePass,
         changeMode,
       }}
     >

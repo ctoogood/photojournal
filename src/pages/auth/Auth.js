@@ -52,6 +52,7 @@ const AuthForm = (props) => {
   const { verify, login, handleClose } = appContext;
 
   const returnHome = () => {
+    handleClose();
     history.push("/");
   };
 

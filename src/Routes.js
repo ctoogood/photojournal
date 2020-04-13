@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import PostList from "./components/posts/PostList";
 import PostDetail from "./components/posts/PostDetail";
 import AuthForm from "./pages/auth/Auth";
+import AccountSettings from "./components/settings/Settings";
 
 const Routes = () => {
   return (
@@ -14,6 +15,7 @@ const Routes = () => {
       <Route path="/" exact component={Hero} />
       <Route path="/login" exact component={AuthForm} />
       <Route path="/signup" exact component={AuthForm} />
+      <Route path="/settings" exact component={AccountSettings} />
       <Route path="/profile/:userid" exact component={Profile} />
       <Route path="/profile/:userid/:collectionid" exact component={PostList} />
       <Route
