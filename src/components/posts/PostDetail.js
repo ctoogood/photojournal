@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/styles";
 
 import {
   Card,
-  CardActionArea,
   CardMedia,
   CardContent,
   Typography,
@@ -41,7 +40,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   icon: {
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.2)",
     "&:hover": {
       color: "white",
     },
@@ -145,51 +144,49 @@ const PostDetail = () => {
           <CircularProgress />
         ) : (
           <Card>
-            <CardActionArea>
-              <CardMedia className={classes.imageContainer}>
-                <S3Image
-                  className="postDetail__image"
-                  level="private"
-                  imgKey={imageKey}
-                />
-                <section className="postDetail__arrows">
-                  {prev ? (
-                    <Link
-                      className="postDetail__arrows__left"
-                      to={`/profile/${user.username}/${collectionid}/${prev}`}
-                    >
-                      <IconButton className={classes.icon}>
-                        <ArrowBackIosIcon className={classes.arrow} />
-                      </IconButton>
-                    </Link>
-                  ) : null}
-                  {next ? (
-                    <Link
-                      className="postDetail__arrows__right"
-                      to={`/profile/${user.username}/${collectionid}/${next}`}
-                    >
-                      <IconButton className={classes.icon}>
-                        <ArrowForwardIosIcon className={classes.arrow} />
-                      </IconButton>
-                    </Link>
-                  ) : null}
-                </section>
-              </CardMedia>
-              <CardContent>
-                <Typography color="textPrimary" variant="h6">
-                  {post.title}
-                </Typography>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {post.caption}
-                </Typography>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {date}
-                </Typography>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {post.location}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
+            <CardMedia className={classes.imageContainer}>
+              <S3Image
+                className="postDetail__image"
+                level="private"
+                imgKey={imageKey}
+              />
+              <section className="postDetail__arrows">
+                {prev ? (
+                  <Link
+                    className="postDetail__arrows__left"
+                    to={`/profile/${user.username}/${collectionid}/${prev}`}
+                  >
+                    <IconButton className={classes.icon}>
+                      <ArrowBackIosIcon className={classes.arrow} />
+                    </IconButton>
+                  </Link>
+                ) : null}
+                {next ? (
+                  <Link
+                    className="postDetail__arrows__right"
+                    to={`/profile/${user.username}/${collectionid}/${next}`}
+                  >
+                    <IconButton className={classes.icon}>
+                      <ArrowForwardIosIcon className={classes.arrow} />
+                    </IconButton>
+                  </Link>
+                ) : null}
+              </section>
+            </CardMedia>
+            <CardContent>
+              <Typography color="textPrimary" variant="h6">
+                {post.title}
+              </Typography>
+              <Typography color="textSecondary" variant="subtitle1">
+                {post.caption}
+              </Typography>
+              <Typography color="textSecondary" variant="subtitle1">
+                {date}
+              </Typography>
+              <Typography color="textSecondary" variant="subtitle1">
+                {post.location}
+              </Typography>
+            </CardContent>
           </Card>
         )}
       </section>

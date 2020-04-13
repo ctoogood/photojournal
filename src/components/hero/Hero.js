@@ -78,7 +78,7 @@ const Hero = () => {
         </section>
         {!user ? (
           <section className="hero__aboutsection">
-            <Link className="hero__link" to="/login">
+            <Link className="hero__link" to="/signup">
               <Button
                 variant="contained"
                 color="inherit"

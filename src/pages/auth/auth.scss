@@ -7,6 +7,10 @@
     }
 }
 
+.login__page {
+    position: relative;
+}
+
 .auth__spaceAbove {
     margin-bottom: 1rem;
 }
@@ -31,4 +35,8 @@ main {
 
 .login__noaccount {
     border-top:1px solid #4fa1c4;
+}
+
+.login__error {
+    color: red;
 }
