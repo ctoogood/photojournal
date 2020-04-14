@@ -1,21 +1,13 @@
 import React, { useState } from "react";
-import { Auth, Storage } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import { API, graphqlOperation } from "aws-amplify";
-import { v4 as uuid } from "uuid";
 import { makeStyles } from "@material-ui/styles";
-import config from "../../aws-exports";
 
-import {
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Card,
-  Button,
-  CircularProgress,
-} from "@material-ui/core";
+import { FormControl, Card, Button, CircularProgress } from "@material-ui/core";
 
 import { updatePost } from "../../graphql/mutations";
 import { useHistory } from "react-router-dom";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,45 +38,10 @@ const EditPost = ({ post }) => {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(post.title);
   const [caption, setCaption] = useState(post.caption);
   const [location, setLocation] = useState(post.location);
   const [date, setDate] = useState(post.date);
-  const [img, setImg] = useState(post.image.key);
-  const [uploading, setUploading] = useState(false);
-
-  const {
-    aws_user_files_s3_bucket_region: region,
-    aws_user_files_s3_bucket: bucket,
-  } = config;
-
-  const uploadFile = async (file) => {
-    try {
-      const fileName = `upload/${uuid()}`;
-      const user = await Auth.currentAuthenticatedUser();
-      const result = await Storage.vault.put(fileName, file, {
-        contentType: "image/jpg",
-        metadata: {
-          owner: user.username,
-        },
-      });
-      setImg(fileName);
-      console.log("Uploaded File:", result);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const onChange = async (e) => {
-    setUploading(true);
-
-    let files = [];
-    for (var i = 0; i < e.target.files.length; i++) {
-      files.push(e.target.files.item(i));
-    }
-    await Promise.all(files.map((f) => uploadFile(f)));
-    setUploading(false);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -95,11 +52,11 @@ const EditPost = ({ post }) => {
         graphqlOperation(updatePost, {
           input: {
             id: post.id,
+            title: title,
             collectionId: post.collectionId,
             caption: caption,
             location: location,
             date: date,
-            image: { key: img, bucket: bucket, region: region },
           },
         })
       );
@@ -118,33 +75,11 @@ const EditPost = ({ post }) => {
         <CircularProgress />
       ) : (
         <Card className={classes.card}>
-          <form onSubmit={handleSubmit}>
-            <h2>Add A Post</h2>
-            <div>
-              <Button
-                className={classes.button}
-                onClick={() =>
-                  document.getElementById("add-image-file-input").click()
-                }
-                disabled={uploading}
-                content={uploading ? "Uploading..." : "Add Images"}
-              >
-                Select Image
-              </Button>
-
-              <input
-                id="add-image-file-input"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={onChange}
-                style={{ display: "none" }}
-              />
-            </div>
+          <ValidatorForm onSubmit={handleSubmit}>
+            <h2>Edit Post</h2>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Title</InputLabel>
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
                   id="component-outlined"
                   autoFocus
@@ -155,15 +90,15 @@ const EditPost = ({ post }) => {
                   }}
                   label="Title"
                   type="text"
+                  validators={["required"]}
+                  errorMessages={["this field is required"]}
                 />
               </FormControl>
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Caption</InputLabel>
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   autoFocus
                   value={caption}
@@ -178,10 +113,8 @@ const EditPost = ({ post }) => {
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Location</InputLabel>
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   value={location}
                   onChange={(e) => {
@@ -194,9 +127,8 @@ const EditPost = ({ post }) => {
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
-                  disabled={!img}
                   id="component-outlined"
                   value={date}
                   onChange={(e) => {
@@ -207,15 +139,10 @@ const EditPost = ({ post }) => {
                 />
               </FormControl>
             </div>
-            <Button
-              className={classes.button}
-              color="secondary"
-              type="submit"
-              disabled={!img}
-            >
-              Add Post
+            <Button className={classes.button} color="secondary" type="submit">
+              Submit Changes
             </Button>
-          </form>
+          </ValidatorForm>
         </Card>
       )}
     </section>

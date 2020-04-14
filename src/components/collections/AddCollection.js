@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { makeStyles } from "@material-ui/styles";
 
-import {
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Card,
-  Button,
-  CircularProgress,
-} from "@material-ui/core";
+import { FormControl, Card, Button, CircularProgress } from "@material-ui/core";
 
 import { createCollection } from "../../graphql/mutations";
 import "./collections.scss";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -69,12 +63,11 @@ const AddCollection = (props) => {
         {loading ? (
           <CircularProgress />
         ) : (
-          <form onSubmit={handleSubmit}>
+          <ValidatorForm onSubmit={handleSubmit}>
             <h2>Add A Collection</h2>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Name</InputLabel>
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
                   id="component-outlined"
                   autoFocus
@@ -85,15 +78,14 @@ const AddCollection = (props) => {
                   }}
                   label="Name"
                   type="text"
+                  validators={["required"]}
+                  errorMessages={["this field is required"]}
                 />
               </FormControl>
             </div>
             <div>
               <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">
-                  Description
-                </InputLabel>
-                <OutlinedInput
+                <TextValidator
                   className={classes.input}
                   id="component-outlined"
                   value={description}
@@ -102,13 +94,15 @@ const AddCollection = (props) => {
                   }}
                   label="Description"
                   type="text"
+                  validators={["required"]}
+                  errorMessages={["this field is required"]}
                 />
               </FormControl>
             </div>
             <Button className={classes.button} color="secondary" type="submit">
               Add Collection
             </Button>
-          </form>
+          </ValidatorForm>
         )}
       </Card>
     </section>

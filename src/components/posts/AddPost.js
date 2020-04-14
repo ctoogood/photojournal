@@ -7,8 +7,6 @@ import config from "../../aws-exports";
 
 import {
   FormControl,
-  InputLabel,
-  OutlinedInput,
   Card,
   CardMedia,
   CardContent,
@@ -21,6 +19,7 @@ import {
 import { MoreVert, CloseOutlined } from "@material-ui/icons";
 
 import { createPost } from "../../graphql/mutations";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,9 +70,9 @@ const AddPost = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
+  const [caption, setCaption] = useState(" ");
+  const [location, setLocation] = useState(" ");
+  const [date, setDate] = useState(" ");
   const [img, setImg] = useState();
   const [file, setFile] = useState({});
   const [preview, setPreview] = useState(false);
@@ -226,7 +225,7 @@ const AddPost = (props) => {
               <h2>Add A Post</h2>
               {!edit ? (
                 <div>
-                  <input type="file" accept="image/*" onChange={onChange} />
+                  <input type="file" accept="image/jpg" onChange={onChange} />
                   <img id="output_image" alt="preview" />
                 </div>
               ) : (
@@ -258,91 +257,88 @@ const AddPost = (props) => {
           <CardMedia className={classes.media}>
             <img src={localImage} alt="preview" />
           </CardMedia>
-          <CardContent className={classes.content}>
+          <ValidatorForm onSubmit={handleSubmit}>
+            <CardContent className={classes.content}>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <TextValidator
+                    className={classes.input}
+                    disabled={loading}
+                    autoFocus
+                    value={title}
+                    multiline={true}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                    }}
+                    label="Title"
+                    type="text"
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <TextValidator
+                    className={classes.input}
+                    disabled={loading}
+                    value={caption}
+                    multiline={true}
+                    onChange={(e) => {
+                      setCaption(e.target.value);
+                    }}
+                    label="Caption"
+                    type="text"
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <TextValidator
+                    className={classes.input}
+                    disabled={loading}
+                    value={location}
+                    onChange={(e) => {
+                      setLocation(e.target.value);
+                    }}
+                    label="Location"
+                    type="text"
+                  />
+                </FormControl>
+              </div>
+              <div>
+                <FormControl className={classes.formControl} variant="outlined">
+                  <TextValidator
+                    className={classes.input}
+                    disabled={loading}
+                    defaultValue={date}
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                    }}
+                    label="Date"
+                    type="date"
+                  />
+                </FormControl>
+              </div>
+              <CardActions>
+                <IconButton className={classes.settings} aria-label="settings">
+                  <MoreVert />
+                </IconButton>
+              </CardActions>
+            </CardContent>
             <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Title</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  disabled={loading}
-                  autoFocus
-                  value={title}
-                  multiline={true}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                  }}
-                  label="Title"
-                  type="text"
-                />
-              </FormControl>
+              <Button
+                disabled={loading}
+                className={classes.button}
+                onClick={editPreview}
+              >
+                Change Image
+              </Button>
+              <Button className={classes.button} type="submit">
+                {loading ? <CircularProgress color="secondary" /> : "Add Post"}
+              </Button>
             </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Caption</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  disabled={loading}
-                  value={caption}
-                  multiline={true}
-                  onChange={(e) => {
-                    setCaption(e.target.value);
-                  }}
-                  label="Caption"
-                  type="text"
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <InputLabel htmlFor="component-outlined">Location</InputLabel>
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  disabled={loading}
-                  value={location}
-                  onChange={(e) => {
-                    setLocation(e.target.value);
-                  }}
-                  label="Location"
-                  type="text"
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl className={classes.formControl} variant="outlined">
-                <OutlinedInput
-                  className={classes.input}
-                  id="component-outlined"
-                  disabled={loading}
-                  defaultValue={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
-                  }}
-                  label="Date"
-                  type="date"
-                />
-              </FormControl>
-            </div>
-            <CardActions>
-              <IconButton className={classes.settings} aria-label="settings">
-                <MoreVert />
-              </IconButton>
-            </CardActions>
-          </CardContent>
-          <div>
-            <Button
-              disabled={loading}
-              className={classes.button}
-              onClick={editPreview}
-            >
-              Change Image
-            </Button>
-            <Button className={classes.button} onClick={handleSubmit}>
-              {loading ? <CircularProgress color="secondary" /> : "Add Post"}
-            </Button>
-          </div>
+          </ValidatorForm>
         </Card>
       )}
     </section>
