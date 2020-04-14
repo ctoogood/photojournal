@@ -1,9 +1,11 @@
 # Photojournalit
 ## Online image storage & viewing
 
+ 	[View the Website](https://master.d2u97rkd7xed86.amplifyapp.com/)
+
 ![Home Page](example_images/pj_home.PNG)
 
-Photojournalit is a photo storing website built using AWS Amplify.
+Photojournalit is a photo storing website built using React and AWS Amplify.
 
 ---
 
@@ -13,24 +15,26 @@ It features authentication built on AWS Cognito which allows users to register, 
 
 ---
 
-![Collections Page](example_images/pj_collections.jpg)
+![Collections Page](example_images/pj_collections.PNG)
 
 Once logged in the user can create a collection.  The collections are listed on the user's profile page.
 
 ---
 
-![Posts Page](example_images/pj_addPost.jpg)
+![Posts Page](example_images/pj_addPost.PNG)
 
 Within each collection, new posts can be added through the Add Post form. Using GraphQL subscriptions the list of posts is automatically updated on upload of the new post.
 
 ---
 
-![Post Options](example_images/pj_postOptions.png)
+![Post Options](example_images/pj_postOptions.PNG)
 
 Posts can be edited, downloaded, assigned to the collection cover,or deleted.  Each collection and post is stored in AWS Dynamo DB and the images are stored in AWS S3 storage.
 
 ---
 
-![Post Detail](example_images/pj_post.png)
+![Post Detail](example_images/pj_post.PNG)
+
+The posts can be viewed individually, with the option to navigate to the previous and next image in the collection.
 
 
