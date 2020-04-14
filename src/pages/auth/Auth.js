@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AuthForm = (props) => {
+const AuthForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const { pathname } = useLocation();
@@ -69,7 +69,7 @@ const AuthForm = (props) => {
           <IconButton className={classes.icon} onClick={returnHome}>
             <CloseOutlined />
           </IconButton>
-          {pathname === "/login" && login ? <Login /> : <SignUp />}
+          {!login || pathname === "/signup" ? <SignUp /> : <Login />}
         </Card>
       </main>
     </section>

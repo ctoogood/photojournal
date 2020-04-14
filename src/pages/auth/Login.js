@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   verify: {
     zIndex: "10",
   },
+  loading: {
+    display: "block",
+  },
 }));
 
 const Login = () => {
@@ -59,11 +62,11 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      history.push(`/profile/${user.userName}`);
+      history.push(`profile/${user.username}`);
     } else {
       return;
     }
-  }, [user, history]);
+  });
 
   return (
     <CardContent>
@@ -111,7 +114,7 @@ const Login = () => {
             </div>
             <div>
               {isLoading ? (
-                <CircularProgress />
+                <CircularProgress className={classes.loading} />
               ) : (
                 <Button
                   disabled={ValidatorForm.isFormValid}

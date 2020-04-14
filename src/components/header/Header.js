@@ -75,7 +75,7 @@ const Header = (loggedIn) => {
   const history = useHistory();
   const theme = useTheme();
   const appContext = useContext(AuthContext);
-  const { user } = appContext;
+  const { user, login, changeMode } = appContext;
   const classes = useStyles();
   const [toggle, setToggle] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -90,6 +90,12 @@ const Header = (loggedIn) => {
 
   const toggleDrawer = () => {
     setToggle(!toggle);
+  };
+
+  const handleLogin = () => {
+    if (!login) {
+      changeMode();
+    }
   };
 
   const signOut = async () => {
@@ -107,7 +113,7 @@ const Header = (loggedIn) => {
       <List>
         {!user ? (
           <ListItem button>
-            <Link to="/login">
+            <Link onClick={handleLogin} to="/login">
               <ListItemText>Login/Sign-Up</ListItemText>
             </Link>
           </ListItem>
@@ -152,7 +158,7 @@ const Header = (loggedIn) => {
             </Typography>
           </Link>
           {!user ? (
-            <Link className="header__link" to="/login">
+            <Link onClick={handleLogin} className="header__link" to="/login">
               <Button color="inherit" className={classes.button}>
                 Login
               </Button>
@@ -180,7 +186,7 @@ const Header = (loggedIn) => {
                   <Link to={`/profile/${user.username}`}>Profile</Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
-                  <Link to="/settings">My account</Link>
+                  <Link to="/settings">Settings</Link>
                 </MenuItem>
                 <MenuItem onClick={signOut}>
                   <Link to="/">Logout</Link>

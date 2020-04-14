@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/styles";
 
 import ChangePass from "../../pages/auth/ChangePass";
 import { Paper } from "@material-ui/core";
-import DeleteAccount from "./DeleteAccount";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +19,6 @@ const AccountSettings = () => {
     <Paper className={classes.root}>
       <h1>Account Settings</h1>
       <ChangePass />
-      <DeleteAccount />
     </Paper>
   );
 };

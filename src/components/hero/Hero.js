@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
+import SmoothScroll from "smooth-scroll";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { Button } from "@material-ui/core";
@@ -31,21 +32,27 @@ const Hero = () => {
   const classes = useStyles();
   const appContext = useContext(AuthContext);
   const { user } = appContext;
+
+  // eslint-disable-next-line no-unused-vars
+  var scroll = new SmoothScroll('a[href*="#about"]');
+
   return (
-    <>
+    <section className="hero">
       <section className="hero__main">
         <ProgressiveImage src={camera} placeholder={camera_small} delay={500}>
           {(src) => <img src={src} alt="Hand Holding Camera" />}
         </ProgressiveImage>
         <div className="hero__headline">
-          <h1>Store, Organise And Share Your Memories</h1>
+          <h1>Store, Organise And View Your Memories</h1>
         </div>
         <div className="hero__expand">
-          <h2>Find Out More</h2>
-          <ExpandMoreIcon />
+          <a data-scroll href="#about">
+            <h2>Find Out More</h2>
+            <ExpandMoreIcon />
+          </a>
         </div>
       </section>
-      <section className="hero__about">
+      <section className="hero__about" id="about">
         <h2>
           Photojournal<b>it</b>
         </h2>
@@ -62,10 +69,7 @@ const Hero = () => {
           <div className="hero__aboutimage">
             <img src={album} alt="album icon" />
           </div>
-          <p>
-            Sort your images into secure albums and share them with your friends
-            & family
-          </p>
+          <p>Sort your images into secure albums</p>
         </section>
         <section className="hero__aboutsection">
           <div className="hero__aboutimage">
@@ -90,7 +94,7 @@ const Hero = () => {
           </section>
         ) : null}
       </section>
-    </>
+    </section>
   );
 };
 

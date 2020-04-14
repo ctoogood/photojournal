@@ -6,7 +6,7 @@ const AuthContext = React.createContext();
 const AuthProvider = (props) => {
   let [user, setUser] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -45,7 +45,6 @@ const AuthProvider = (props) => {
       await Auth.signUp(email, password);
       setVerify(true);
     } catch (e) {
-      console.log(e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -58,7 +57,6 @@ const AuthProvider = (props) => {
       await Auth.confirmSignUp(email, code);
       setVerify(false);
     } catch (e) {
-      console.log(e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -66,6 +64,7 @@ const AuthProvider = (props) => {
 
   const handleClose = () => {
     setVerify(false);
+    setLogin(true);
     setEmail("");
     setPassword("");
     setError("");
@@ -150,17 +149,20 @@ const AuthProvider = (props) => {
   useEffect(() => {
     let updateUser = async (authState) => {
       try {
+        setIsLoading(true);
         let user = await Auth.currentAuthenticatedUser();
         setUser(user);
         setError("");
+        setLogin(true);
+        setIsLoading(false);
       } catch {
         setUser(null);
         setError("");
+        setIsLoading(false);
       }
     };
 
     Hub.listen("auth", updateUser); // listen for login/signup events
-    console.log();
     updateUser(); // check manually the first time because we won't get a Hub event
     return () => Hub.remove("auth", updateUser); // cleanup
   }, []);

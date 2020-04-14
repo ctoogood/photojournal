@@ -115,7 +115,7 @@ const ForgotPass = () => {
           </div>
         </ValidatorForm>
       ) : (
-        <form onSubmit={handleNewPassSubmit}>
+        <ValidatorForm onSubmit={handleNewPassSubmit}>
           <p>
             Check your emails, enter the reset code below and then enter a new
             password
@@ -142,7 +142,7 @@ const ForgotPass = () => {
                 id="password-input"
                 value={password}
                 onChange={handlePassword}
-                label="Password"
+                label="New Password"
                 type="password"
                 validators={["required", "minNumber:8"]}
                 errorMessages={[
@@ -161,7 +161,7 @@ const ForgotPass = () => {
               </Button>
             )}
           </div>
-        </form>
+        </ValidatorForm>
       )}
     </>
   );
